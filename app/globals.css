@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --paper: #F7F3E9;
+  --paper-alt: #F1EADA;
+  --ink: #1A1A1A;
+  --ink-soft: #3D3A34;
+  --marker: #FF4D3D;
+  --marker-dark: #C93521;
+  --sticky: #FFD23F;
+  --pen-blue: #4D7CFF;
+  --leaf: #2FAE6B;
+  --leaf-dark: #1F7A4A;
+  --mint: #3DDC97;
+  --border-rough: 3px;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-alt: var(--paper-alt);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-marker: var(--marker);
+  --color-marker-dark: var(--marker-dark);
+  --color-sticky: var(--sticky);
+  --color-pen-blue: var(--pen-blue);
+  --color-leaf: var(--leaf);
+  --color-leaf-dark: var(--leaf-dark);
+  --color-mint: var(--mint);
+  --font-display: 'Archivo Black', Impact, sans-serif;
+  --font-body: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'Caveat', cursive;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(26,26,26,0.09) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Rough hand-drawn border effect using layered offset shadows */
+.rough-border {
+  border: var(--border-rough) solid var(--ink);
+  box-shadow: 4px 4px 0 0 var(--ink);
+}
+
+.rough-border-thick {
+  border: 4px solid var(--ink);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+.tape {
+  position: absolute;
+  background: rgba(255, 210, 63, 0.55);
+  height: 28px;
+  width: 90px;
+  border: 1px solid rgba(26,26,26,0.2);
+}
+
+.marker-underline {
+  background-image: linear-gradient(120deg, var(--sticky) 0%, var(--sticky) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 88%;
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--pen-blue);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--marker);
+  color: var(--paper);
+}
