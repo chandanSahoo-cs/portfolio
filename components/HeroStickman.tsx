@@ -12,7 +12,7 @@ export default function HeroStickman() {
     if (!imageWrapperRef.current || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Reveal the PNG from left to right on page load
+      // Reveal the PNG from left to right smoothly without trailing lag
       gsap.fromTo(
         imageWrapperRef.current,
         {
@@ -22,20 +22,26 @@ export default function HeroStickman() {
         {
           clipPath: "inset(0% 0% 0% 0%)",
           opacity: 1,
-          duration: 1.2,
-          ease: "power2.out",
-          delay: 0.2,
+          duration: 0.85,
+          ease: "power1.out",
+          delay: 0.05,
+          onComplete: () => {
+            // Remove clip-path layer once finished to prevent GPU compositor overhead
+            if (imageWrapperRef.current) {
+              imageWrapperRef.current.style.clipPath = "none";
+            }
+
+            // Start subtle ambient float seamlessly after reveal completes
+            gsap.to(containerRef.current, {
+              y: -4,
+              duration: 2.8,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            });
+          },
         }
       );
-
-      // Subtle ambient hover float
-      gsap.to(containerRef.current, {
-        y: -4,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -44,11 +50,11 @@ export default function HeroStickman() {
   return (
     <div
       ref={containerRef}
-      className="relative flex-shrink-0 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] flex items-center justify-center select-none"
+      className="relative flex-shrink-0 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] flex items-center justify-center select-none will-change-transform"
     >
       <div
         ref={imageWrapperRef}
-        className="relative w-full aspect-[4/3] flex items-center justify-center"
+        className="relative w-full aspect-[4/3] flex items-center justify-center will-change-[clip-path,opacity]"
       >
         <Image
           src="/drinking-coffee.png"
