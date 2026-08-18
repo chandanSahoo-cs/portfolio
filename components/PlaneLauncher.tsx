@@ -283,13 +283,11 @@ export default function PlaneLauncher() {
           </span>
 
           <div className="text-left">
-            <div className="flex items-center gap-1 leading-none">
-              <span className="hidden xs:inline">THROW</span>
-              <span className="xs:hidden">PLANE</span>
-              <span className="hidden sm:inline">PLANE</span>
-              <span className="hidden sm:inline rounded bg-sticky px-1 py-0.2 text-[9px] text-ink">
+            <div className="flex items-center gap-1.5 leading-none">
+              <span>THROW PLANE</span>
+              <kbd className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[3px] border border-ink border-b-[2.5px] bg-paper-alt px-1 font-mono text-[10px] font-bold text-ink shadow-[0_1px_0_0_rgba(26,26,26,0.2)] transition-transform group-hover:scale-105 group-active:translate-y-[1px] group-active:border-b">
                 P
-              </span>
+              </kbd>
             </div>
             {launchCount > 0 && (
               <span className="hidden sm:block font-mono text-[9px] text-ink-soft">

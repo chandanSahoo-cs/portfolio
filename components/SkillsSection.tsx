@@ -14,7 +14,7 @@ const SKILLS = [
 export default function SkillsSection() {
   return (
     <section id="skills" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="04" title="toolbox" />
+      <SectionLabel index="03" title="toolbox" />
       <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
         {SKILLS.map((s, i) => (
           <Reveal key={s.group} rotate={i % 2 === 0 ? 1 : -1} delay={i * 70}>

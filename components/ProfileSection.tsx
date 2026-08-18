@@ -27,7 +27,7 @@ const PROFILES = [
 export default function ProfileSection() {
   return (
     <section id="profiles" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="08" title="find me elsewhere" />
+      <SectionLabel index="05" title="find me elsewhere" />
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
         {PROFILES.map((p, i) => (
           <Reveal key={p.label} rotate={i % 2 === 0 ? -1 : 1} delay={i * 70}>

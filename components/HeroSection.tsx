@@ -10,7 +10,7 @@ export default function HeroSection() {
       {/* Incomplete, borderless graph grid pattern behind Name & Stickman */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-8 -inset-y-8 -z-10 overflow-hidden gradient(ellipse_at_50%_45%,black_40%,rgba(0,0,0,0.5)_68%,transparent_92%)]"
+        className="pointer-events-none absolute -inset-x-8 -inset-y-8 -z-10 overflow-hidden [mask-image:radial-gradient(ellipse_at_50%_45%,black_40%,rgba(0,0,0,0.5)_68%,transparent_92%)]"
       >
         <svg
           className="h-full w-full opacity-100"
@@ -105,7 +105,7 @@ export default function HeroSection() {
           src="/drinking-coffee.png"
           width="480"
           height="550"
-          className="max-w-70 sm:max-w-90 md:max-w-105 h-auto object-contain"
+          className="max-w-[280px] sm:max-w-[360px] md:max-w-[420px] h-auto object-contain"
           priority
         />
       </div>

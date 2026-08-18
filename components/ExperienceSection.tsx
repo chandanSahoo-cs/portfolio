@@ -7,14 +7,14 @@ const EXPERIENCE = [
     role: "Software Developer Intern",
     org: "Tata Power-DDL",
     period: "June, 2026 - July, 2026",
-    desc: " Built a graph-based request clubbing system using Disjoint Set Union (Union-Find) to consolidate shutdown requests across connected electrical zones",
+    desc: "Built a graph-based request clubbing system using Disjoint Set Union (Union-Find) to consolidate shutdown requests across connected electrical zones.",
   },
 ];
 
 export default function ExperienceSection() {
   return (
     <section id="experience" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="03" title="where I've worked" />
+      <SectionLabel index="02" title="where I've worked" />
       <SeeMore
         initialCount={3}
         items={EXPERIENCE}

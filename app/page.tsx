@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import CompetitiveSections from "@/components/CompetitiveSection";
 import ContactSection from "@/components/ContactSection";
 import DoodleCanvas from "@/components/DoodleCanvas";
@@ -11,26 +12,6 @@ import ProfileSection from "@/components/ProfileSection";
 import ProjectSection from "@/components/ProjectSection";
 import ScrollDoodles from "@/components/ScrollDoodles";
 import SkillsSection from "@/components/SkillsSection";
-
-// const BLOGS = [
-//   {
-//     title: "Why I stopped using ORMs for anything serious",
-//     date: "Jun 2026",
-//     excerpt:
-//       "Three incidents, one migration nightmare, and what I reach for now instead.",
-//   },
-//   {
-//     title: "A minimal mental model for Kafka partitions",
-//     date: "Mar 2026",
-//     excerpt: "The diagram I wish someone had shown me before my first outage.",
-//   },
-//   {
-//     title: "Building a linter plugin from nothing",
-//     date: "Nov 2025",
-//     excerpt:
-//       "Notes from writing Lintern — parsing, AST traversal, and publishing to npm.",
-//   },
-// ];
 
 // const TECH_BOOKS = [
 //   {
@@ -83,29 +64,6 @@ export default function Home() {
 
       {/* COMPETITIVE PROGRAMMING */}
       <CompetitiveSections />
-
-      {/* BOOKS */}
-      {/* <section id="books" className="mx-auto max-w-5xl px-6 py-20">
-        <SectionLabel index="07" title="books I've read" accent="var(--leaf)" />
-
-        <h3 className="mt-10 font-hand text-2xl text-marker-dark">Tech</h3>
-        <div className="mt-4 grid gap-5 sm:grid-cols-2">
-          {TECH_BOOKS.map((b, i) => (
-            <Reveal key={b.title} rotate={i % 2 === 0 ? -1 : 1} delay={i * 60}>
-              <BookCard book={b} />
-            </Reveal>
-          ))}
-        </div>
-
-        <h3 className="mt-12 font-hand text-2xl text-leaf-dark">Non-tech</h3>
-        <div className="mt-4 grid gap-5 sm:grid-cols-2">
-          {NON_TECH_BOOKS.map((b, i) => (
-            <Reveal key={b.title} rotate={i % 2 === 0 ? 1 : -1} delay={i * 60}>
-              <BookCard book={b} accent="var(--leaf)" />
-            </Reveal>
-          ))}
-        </div>
-      </section> */}
 
       {/* PROFILES */}
       <ProfileSection />
