@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { Menu, X } from "lucide-react";
 
@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItem[] = [
     name: "experience",
     href: "#experience",
     id: "experience",
-    color: "var(--pen-blue)",
+    color: "var(--marker)",
     path: "M 16 22 C 13 8, 38 3, 68 3 C 104 3, 120 10, 118 23 C 116 36, 88 41, 54 41 C 20 41, 4 35, 6 22 C 8 10, 26 4, 54 3.5",
   },
   {
@@ -52,31 +52,75 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState<string>("top");
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
+  const hoveredRef = useRef<string | null>(null);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const activeTweenRef = useRef<Map<string, gsap.core.Tween>>(new Map());
 
-  // Track active section on scroll
+  // Smooth drawing using GSAP power3.out
+  const drawPath = useCallback((id: string, duration = 0.5) => {
+    const pathEl = pathRefs.current.get(id);
+    if (!pathEl) return;
+
+    const prevTween = activeTweenRef.current.get(id);
+    if (prevTween) prevTween.kill();
+
+    const tween = gsap.to(pathEl, {
+      strokeDashoffset: 0,
+      duration,
+      ease: "power3.out",
+    });
+
+    activeTweenRef.current.set(id, tween);
+  }, []);
+
+  // Smooth un-drawing using GSAP power2.out
+  const undrawPath = useCallback((id: string, duration = 0.3) => {
+    const pathEl = pathRefs.current.get(id);
+    if (!pathEl) return;
+
+    const prevTween = activeTweenRef.current.get(id);
+    if (prevTween) prevTween.kill();
+
+    const length = pathEl.getTotalLength();
+    const tween = gsap.to(pathEl, {
+      strokeDashoffset: -length,
+      duration,
+      ease: "power2.out",
+    });
+
+    activeTweenRef.current.set(id, tween);
+  }, []);
+
+  // Scroll handler with throttle and smooth state tracking
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 40);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          setScrolled(scrollY > 20);
 
-      const scrollMid = scrollY + window.innerHeight * 0.35;
-      let current = "top";
+          const scrollMid = scrollY + window.innerHeight * 0.35;
+          let current = "top";
 
-      for (const item of NAV_ITEMS) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          if (scrollMid >= el.offsetTop - 80) {
-            current = item.id;
+          for (const item of NAV_ITEMS) {
+            const el = document.getElementById(item.id);
+            if (el) {
+              if (scrollMid >= el.offsetTop - 100) {
+                current = item.id;
+              }
+            }
           }
-        }
-      }
 
-      setActiveSection(current);
+          setActiveSection(current);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -85,179 +129,194 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Initialize paths with strokeDasharray and draw active section if present
+  // Initialize paths and sync active section drawing
   useEffect(() => {
     pathRefs.current.forEach((pathEl, id) => {
       if (!pathEl) return;
       const length = pathEl.getTotalLength();
       gsap.set(pathEl, {
         strokeDasharray: length,
-        strokeDashoffset: id === activeSection ? 0 : length,
       });
-    });
-  }, [activeSection]);
 
-  // Animate live pen stroke on hover
+      if (!hoveredRef.current) {
+        if (id === activeSection) {
+          drawPath(id, 0.55);
+        } else {
+          undrawPath(id, 0.3);
+        }
+      }
+    });
+  }, [activeSection, drawPath, undrawPath]);
+
+  // Hover handlers
   const handleMouseEnter = (id: string) => {
+    hoveredRef.current = id;
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
-    // Kill any existing tween for this path
-    const prevTween = activeTweenRef.current.get(id);
-    if (prevTween) prevTween.kill();
-
     const length = pathEl.getTotalLength();
-
-    // Reset to start and physically draw the line around the text
     gsap.set(pathEl, {
       strokeDasharray: length,
       strokeDashoffset: length,
-      opacity: 1,
     });
 
-    const tween = gsap.to(pathEl, {
-      strokeDashoffset: 0,
-      duration: 0.45,
-      ease: "power2.out",
-    });
-
-    activeTweenRef.current.set(id, tween);
+    drawPath(id, 0.48);
   };
 
   const handleMouseLeave = (id: string) => {
-    const pathEl = pathRefs.current.get(id);
-    if (!pathEl) return;
-
-    const prevTween = activeTweenRef.current.get(id);
-    if (prevTween) prevTween.kill();
-
-    // If it's the active section, leave it drawn; otherwise animate out
+    hoveredRef.current = null;
     if (id === activeSection) {
-      return;
+      drawPath(id, 0.35);
+    } else {
+      undrawPath(id, 0.28);
     }
+  };
 
-    const length = pathEl.getTotalLength();
-    const tween = gsap.to(pathEl, {
-      strokeDashoffset: -length,
-      duration: 0.28,
-      ease: "power1.in",
-    });
-
-    activeTweenRef.current.set(id, tween);
+  // Ultra-smooth custom scroll jump
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const id = href.replace("#", "");
+    const el = document.getElementById(id);
+    if (el) {
+      const navOffset = 90;
+      const targetY = el.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({
+        top: targetY,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "py-2.5 px-4"
-          : "border-b-[3px] border-ink bg-paper/95 py-4 px-6 backdrop-blur-sm"
-      }`}
-    >
-      <nav
-        className={`mx-auto flex max-w-5xl items-center justify-between transition-all duration-300 ${
-          isScrolled
-            ? "rough-border rounded-full bg-paper/95 px-5 py-2 shadow-[4px_4px_0_0_var(--ink)] backdrop-blur-md"
-            : ""
-        }`}
-      >
-        {/* Logo */}
-        <a
-          href="#top"
-          className="group relative flex items-center font-display text-lg tracking-tight select-none"
+    <header className="sticky top-0 z-50 w-full select-none">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-3 pb-2">
+        <nav
+          className={`flex items-center justify-between rounded-full bg-paper/90 px-5 py-2.5 backdrop-blur-md transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${
+            scrolled
+              ? "rough-border shadow-[4px_4px_0_0_var(--ink)] translate-y-0"
+              : "border-2 border-ink/20 shadow-[2px_2px_0_0_rgba(26,26,26,0.1)]"
+          }`}
         >
-          <span className="transition-transform group-hover:-rotate-3">CS</span>
-          <span className="text-marker transition-transform group-hover:scale-150">.</span>
-        </a>
-
-        {/* Desktop Navigation with GSAP Live-Drawn Hand Circles */}
-        <div className="hidden items-center gap-4 md:flex">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeSection === item.id;
-
-            return (
-              <a
-                key={item.id}
-                href={item.href}
-                onMouseEnter={() => handleMouseEnter(item.id)}
-                onMouseLeave={() => handleMouseLeave(item.id)}
-                className={`relative px-3 py-1.5 font-mono text-[13px] transition-colors select-none ${
-                  isActive ? "font-bold text-ink" : "font-medium text-ink-soft hover:text-ink"
-                }`}
-              >
-                {/* SVG Canvas with Hand-Drawn Circle Path */}
-                <svg
-                  viewBox="0 0 120 44"
-                  fill="none"
-                  aria-hidden="true"
-                  preserveAspectRatio="none"
-                  className="pointer-events-none absolute -inset-x-2 -inset-y-1 h-[calc(100%+8px)] w-[calc(100%+16px)] overflow-visible"
-                >
-                  <path
-                    ref={(el) => {
-                      if (el) pathRefs.current.set(item.id, el);
-                      else pathRefs.current.delete(item.id);
-                    }}
-                    d={item.path}
-                    fill="none"
-                    stroke={item.color}
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{ willChange: "stroke-dashoffset" }}
-                  />
-                </svg>
-
-                <span className="relative z-10">{item.name}</span>
-              </a>
-            );
-          })}
-        </div>
-
-        {/* Contact Action & Mobile Menu Toggle */}
-        <div className="flex items-center gap-3">
+          {/* Logo */}
           <a
-            href="#contact"
-            className="rough-border relative overflow-hidden bg-marker px-3.5 py-1.5 font-mono text-xs font-bold text-paper transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
+            href="#top"
+            onClick={(e) => scrollToSection(e, "#top")}
+            className="group relative flex items-center font-display text-lg tracking-tight select-none"
           >
-            say hi
+            <span className="transition-transform duration-300 group-hover:-rotate-3">
+              CS
+            </span>
+            <span className="text-marker transition-transform duration-300 group-hover:scale-125">
+              .
+            </span>
           </a>
 
-          {/* Mobile hamburger button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rough-border flex h-8 w-8 items-center justify-center bg-paper p-1 text-ink transition md:hidden"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="rough-border mt-3 overflow-hidden rounded-2xl bg-paper p-5 shadow-[5px_5px_0_0_var(--ink)] md:hidden">
-          <div className="flex flex-col gap-3 font-mono text-sm">
+          {/* Desktop Navigation Links with Live-Drawn Circles */}
+          <div className="hidden items-center gap-1.5 md:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
+
               return (
                 <a
                   key={item.id}
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between border-b border-ink/10 py-2 transition-colors ${
-                    isActive ? "font-bold text-marker" : "text-ink-soft hover:text-ink"
+                  onClick={(e) => scrollToSection(e, item.href)}
+                  onMouseEnter={() => handleMouseEnter(item.id)}
+                  onMouseLeave={() => handleMouseLeave(item.id)}
+                  className={`relative px-3.5 py-1 font-mono text-[13px] transition-colors duration-200 ${
+                    isActive
+                      ? "font-bold text-ink"
+                      : "font-medium text-ink-soft hover:text-ink"
                   }`}
                 >
-                  <span>{item.name}</span>
-                  {isActive && <span className="font-hand text-lg text-marker">✦ active</span>}
+                  {/* SVG Canvas with Live Drawn Stroke */}
+                  <svg
+                    viewBox="0 0 120 44"
+                    fill="none"
+                    aria-hidden="true"
+                    preserveAspectRatio="none"
+                    className="pointer-events-none absolute -inset-x-2 -inset-y-1 h-[calc(100%+8px)] w-[calc(100%+16px)] overflow-visible"
+                  >
+                    <path
+                      ref={(el) => {
+                        if (el) pathRefs.current.set(item.id, el);
+                        else pathRefs.current.delete(item.id);
+                      }}
+                      d={item.path}
+                      fill="none"
+                      stroke={item.color}
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ willChange: "stroke-dashoffset" }}
+                    />
+                  </svg>
+
+                  <span className="relative z-10">{item.name}</span>
                 </a>
               );
             })}
           </div>
-        </div>
-      )}
+
+          {/* Contact Action & Mobile Menu Toggle */}
+          <div className="flex items-center gap-3">
+            <a
+              href="#contact"
+              onClick={(e) => scrollToSection(e, "#contact")}
+              className="rough-border relative overflow-hidden bg-marker px-4 py-1.5 font-mono text-xs font-bold text-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
+            >
+              say hi
+            </a>
+
+            {/* Mobile hamburger button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="rough-border flex h-8 w-8 items-center justify-center bg-paper p-1 text-ink transition-all md:hidden"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="rough-border mt-3 overflow-hidden rounded-2xl bg-paper p-5 shadow-[5px_5px_0_0_var(--ink)] transition-all md:hidden">
+            <div className="flex flex-col gap-3 font-mono text-sm">
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    onClick={(e) => {
+                      setMobileMenuOpen(false);
+                      scrollToSection(e, item.href);
+                    }}
+                    className={`flex items-center justify-between border-b border-ink/10 py-2 transition-colors ${
+                      isActive
+                        ? "font-bold text-marker"
+                        : "text-ink-soft hover:text-ink"
+                    }`}
+                  >
+                    <span>{item.name}</span>
+                    {isActive && (
+                      <span className="font-hand text-lg text-marker">
+                        ✦ active
+                      </span>
+                    )}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
