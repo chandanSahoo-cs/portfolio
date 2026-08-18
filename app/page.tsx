@@ -4,6 +4,7 @@ import ContactSection from "@/components/ContactSection";
 import { SquiggleDivider } from "@/components/Doodles";
 import ExperienceSection from "@/components/ExperienceSection";
 import HeroSection from "@/components/HeroSection";
+import PlaneLauncher from "@/components/PlaneLauncher";
 import ProfileSection from "@/components/ProfileSection";
 import ProjectSection from "@/components/ProjectSection";
 import SkillsSection from "@/components/SkillsSection";
@@ -50,32 +51,12 @@ import SkillsSection from "@/components/SkillsSection";
 //   { title: "Educated", author: "Tara Westover", rating: 5 },
 // ];
 
-const PROFILES = [
-  {
-    label: "GitHub",
-    handle: "@chandanSahoo-cs",
-    url: "https://github.com/chandanSahoo-cs",
-  },
-  {
-    label: "LinkedIn",
-    handle: "/in/chandansahoo-cs",
-    url: "https://www.linkedin.com/in/chandansahoo-cs/",
-  },
-  {
-    label: "Twitter / X",
-    handle: "@chandanSahoo_cs",
-    url: "https://x.com/chandanSahoo_cs",
-  },
-  {
-    label: "Email",
-    handle: "chandansahoo02468@gmail.com",
-    url: "mailto:chandansahoo02468@gmail.com",
-  },
-];
+
 
 export default function Home() {
   return (
     <div className="relative w-full overflow-x-clip">
+      <PlaneLauncher />
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b-[3px] border-ink bg-paper/90 backdrop-blur-sm">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
@@ -94,6 +75,9 @@ export default function Home() {
             </a>
             <a href="#competitive" className="hover:text-leaf">
               competitive
+            </a>
+            <a href="#profiles" className="hover:text-leaf">
+              find me
             </a>
             {/* <a href="#books" className="hover:text-leaf">
               books
