@@ -28,7 +28,7 @@ export default function Reveal({
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -37,13 +37,13 @@ export default function Reveal({
   return (
     <div
       ref={ref}
-      className={className}
+      className={`transform-gpu will-change-transform ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible
-          ? `translateY(0) rotate(${rotate}deg)`
-          : `translateY(28px) rotate(${rotate * 3}deg)`,
-        transition: `opacity 0.6s cubic-bezier(.2,.8,.2,1) ${delay}ms, transform 0.6s cubic-bezier(.2,.8,.2,1) ${delay}ms`,
+          ? `translate3d(0, 0, 0) rotate(${rotate}deg)`
+          : `translate3d(0, 20px, 0) rotate(${rotate * 1.6}deg)`,
+        transition: `opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
       }}
     >
       {children}

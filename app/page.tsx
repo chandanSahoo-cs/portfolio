@@ -4,6 +4,7 @@ import ContactSection from "@/components/ContactSection";
 import { SquiggleDivider } from "@/components/Doodles";
 import ExperienceSection from "@/components/ExperienceSection";
 import HeroSection from "@/components/HeroSection";
+import Navbar from "@/components/Navbar";
 import PlaneLauncher from "@/components/PlaneLauncher";
 import ProfileSection from "@/components/ProfileSection";
 import ProjectSection from "@/components/ProjectSection";
@@ -58,38 +59,7 @@ export default function Home() {
     <div className="relative w-full overflow-x-clip">
       <PlaneLauncher />
       {/* NAV */}
-      <header className="sticky top-0 z-50 border-b-[3px] border-ink bg-paper/90 backdrop-blur-sm">
-        <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <a href="#top" className="font-display text-lg tracking-tight">
-            CS<span className="text-marker">.</span>
-          </a>
-          <div className="hidden gap-4 font-mono text-[12px] xl:flex">
-            <a href="#projects" className="hover:text-marker">
-              projects
-            </a>
-            <a href="#experience" className="hover:text-marker">
-              experience
-            </a>
-            <a href="#skills" className="hover:text-marker">
-              skills
-            </a>
-            <a href="#competitive" className="hover:text-leaf">
-              competitive
-            </a>
-            <a href="#profiles" className="hover:text-leaf">
-              find me
-            </a>
-            {/* <a href="#books" className="hover:text-leaf">
-              books
-            </a> */}
-          </div>
-          <a
-            href="#contact"
-            className="rough-border bg-marker px-3 py-1.5 font-mono text-xs font-bold text-paper transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--ink)]">
-            say hi
-          </a>
-        </nav>
-      </header>
+      <Navbar />
 
       {/* HERO */}
       <HeroSection />

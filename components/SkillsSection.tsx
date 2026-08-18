@@ -18,12 +18,19 @@ export default function SkillsSection() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
         {SKILLS.map((s, i) => (
           <Reveal key={s.group} rotate={i % 2 === 0 ? 1 : -1} delay={i * 70}>
-            <div className="rough-border bg-paper-alt p-5">
-              <h3 className="font-hand text-xl text-marker-dark">{s.group}</h3>
+            <div className="rough-border group bg-paper-alt p-5 transition-all">
+              <h3 className="font-hand text-xl text-marker-dark transition-transform duration-200 group-hover:translate-x-1">
+                {s.group}
+              </h3>
               <ul className="mt-3 space-y-1.5 font-mono text-sm">
                 {s.items.map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <span className="text-marker">▸</span>
+                  <li
+                    key={item}
+                    className="flex items-center gap-2 transition-transform duration-150 hover:translate-x-1"
+                  >
+                    <span className="text-marker transition-transform duration-150 group-hover:scale-125">
+                      ▸
+                    </span>
                     {item}
                   </li>
                 ))}

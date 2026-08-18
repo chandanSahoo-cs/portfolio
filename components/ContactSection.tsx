@@ -16,7 +16,7 @@ export default function ContactSection() {
           </p>
           <a
             href="mailto:chandansahoo02468@gmail.com"
-            className="mt-8 inline-block border-[3px] border-paper bg-marker px-6 py-3 font-mono text-sm font-bold text-paper transition hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(247,243,233,0.5)]">
+            className="mt-8 inline-block border-[3px] border-paper bg-marker px-6 py-3 font-mono text-sm font-bold text-paper transition-all duration-200 hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(247,243,233,0.5)] active:translate-y-0 active:shadow-none">
             chandansahoo02468@gmail.com
           </a>
         </div>

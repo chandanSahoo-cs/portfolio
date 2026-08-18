@@ -9,7 +9,7 @@ const PROFILES = [
   },
   {
     label: "LinkedIn",
-    handle: "/in/chandansahoo-cs",
+    handle: "/in/chandansahoo-cs/",
     url: "https://www.linkedin.com/in/chandansahoo-cs/",
   },
   {
@@ -33,10 +33,14 @@ export default function ProfileSection() {
           <Reveal key={p.label} rotate={i % 2 === 0 ? -1 : 1} delay={i * 70}>
             <a
               href={p.url}
-              className="rough-border flex items-center justify-between bg-paper-alt px-5 py-4 transition hover:-translate-y-1 hover:bg-sticky/40">
-              <span className="font-display text-lg">{p.label}</span>
-              <span className="font-mono text-sm text-ink-soft">
-                {p.handle}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rough-border group flex items-center justify-between bg-paper-alt px-5 py-4 transition-all hover:bg-sticky/30">
+              <span className="font-display text-lg transition-transform duration-200 group-hover:translate-x-1">
+                {p.label}
+              </span>
+              <span className="font-mono text-sm text-ink-soft transition-colors duration-200 group-hover:text-ink font-medium">
+                {p.handle} ↗
               </span>
             </a>
           </Reveal>

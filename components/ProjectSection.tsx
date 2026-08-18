@@ -71,14 +71,14 @@ export default function ProjectSection() {
         className="mt-10 grid gap-8 sm:grid-cols-2"
         renderItem={(p, i) => (
           <Reveal key={i} rotate={i % 2 === 0 ? -1.5 : 1.5} delay={i * 80}>
-            <div className="rough-border-thick relative flex h-full flex-col overflow-hidden bg-paper transition hover:-translate-y-1">
+            <div className="group rough-border-thick relative flex h-full flex-col overflow-hidden bg-paper">
               <div className="relative aspect-12/6 w-full overflow-hidden bg-ink/5">
                 <Image
                   src={p.image}
                   alt={`${p.name} preview`}
                   fill
                   sizes="(min-width: 640px) 50vw, 100vw"
-                  className="object-cover object-top"
+                  className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                   priority={i === 0}
                 />
               </div>
@@ -118,7 +118,7 @@ export default function ProjectSection() {
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 border border-ink px-3 py-1.5 font-mono text-[11px] font-bold transition hover:-translate-y-0.5 hover:bg-ink hover:text-paper">
+                      className="rough-border inline-flex items-center gap-1.5 bg-paper px-3 py-1.5 font-mono text-[11px] font-bold text-ink transition-all hover:bg-ink hover:text-paper">
                       Visit ↗
                     </Link>
                   )}
@@ -127,7 +127,7 @@ export default function ProjectSection() {
                       href={p.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 border border-ink px-3 py-1.5 font-mono text-[11px] font-bold transition hover:-translate-y-0.5 hover:bg-ink hover:text-paper">
+                      className="rough-border inline-flex items-center gap-1.5 bg-paper px-3 py-1.5 font-mono text-[11px] font-bold text-ink transition-all hover:bg-ink hover:text-paper">
                       GitHub ↗
                     </Link>
                   )}
@@ -149,7 +149,7 @@ export default function ProjectSection() {
         className="mt-5 grid gap-8 sm:grid-cols-3"
         renderItem={(p, i) => (
           <Reveal key={i} rotate={i % 2 === 0 ? 1.5 : -1.5} delay={i * 80}>
-            <div className="rough-border relative block h-full overflow-hidden bg-paper-alt transition hover:-translate-y-1">
+            <div className="rough-border relative block h-full overflow-hidden bg-paper-alt">
               <div className="p-5">
                 <span
                   className="inline-block border border-ink px-2 py-0.5 font-mono text-[10px] font-bold"
@@ -167,7 +167,7 @@ export default function ProjectSection() {
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 border border-ink px-2 py-1 font-mono text-[10px] font-bold transition hover:-translate-y-0.5 hover:bg-ink hover:text-paper">
+                      className="rough-border inline-flex items-center gap-1 bg-paper px-2.5 py-1 font-mono text-[10px] font-bold text-ink transition-all hover:bg-ink hover:text-paper">
                       Visit ↗
                     </Link>
                   )}
@@ -176,7 +176,7 @@ export default function ProjectSection() {
                       href={p.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 border border-ink px-2 py-1 font-mono text-[10px] font-bold transition hover:-translate-y-0.5 hover:bg-ink hover:text-paper">
+                      className="rough-border inline-flex items-center gap-1 bg-paper px-2.5 py-1 font-mono text-[10px] font-bold text-ink transition-all hover:bg-ink hover:text-paper">
                       GitHub ↗
                     </Link>
                   )}

@@ -44,19 +44,25 @@ export default function CompetitiveSections() {
           <Reveal key={c.platform} rotate={i % 2 === 0 ? -1 : 1} delay={i * 80}>
             <a
               href={c.url}
-              className="rough-border block h-full bg-paper-alt p-5 transition hover:-translate-y-1">
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rough-border group block h-full bg-paper-alt p-5 transition-all">
               <div className="flex items-center justify-between">
-                <h3 className="font-display text-lg">{c.platform}</h3>
+                <h3 className="font-display text-lg transition-colors group-hover:text-marker-dark">
+                  {c.platform}
+                </h3>
                 {c.ratingLabel !== null && (
                   <span
-                    className="rounded-full border-2 border-ink px-2 py-0.5 font-mono text-[10px] font-bold"
+                    className="rounded-full border-2 border-ink px-2 py-0.5 font-mono text-[10px] font-bold transition-transform duration-200 group-hover:scale-110"
                     style={{ background: c.color }}>
                     {c.ratingLabel}
                   </span>
                 )}
               </div>
               <p className="mt-1 font-mono text-xs text-ink-soft">{c.handle}</p>
-              <p className="mt-4 font-display text-3xl">{c.rating}</p>
+              <p className="mt-4 font-display text-3xl transition-transform duration-200 group-hover:scale-105 origin-left">
+                {c.rating}
+              </p>
               <p className="font-mono text-xs text-ink-soft">rating</p>
               <p className="mt-3 border-t border-ink/15 pt-3 font-mono text-xs">
                 {c.stat}
