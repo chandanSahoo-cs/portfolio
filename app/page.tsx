@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import PlaneLauncher from "@/components/PlaneLauncher";
 import ProfileSection from "@/components/ProfileSection";
 import ProjectSection from "@/components/ProjectSection";
+import ScrollDoodles from "@/components/ScrollDoodles";
 import SkillsSection from "@/components/SkillsSection";
 
 // const BLOGS = [
@@ -57,6 +58,7 @@ import SkillsSection from "@/components/SkillsSection";
 export default function Home() {
   return (
     <div className="relative w-full overflow-x-clip">
+      <ScrollDoodles />
       <PlaneLauncher />
       {/* NAV */}
       <Navbar />
