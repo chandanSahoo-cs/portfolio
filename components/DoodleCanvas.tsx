@@ -204,7 +204,7 @@ export default function DoodleCanvas() {
       {/* Floating Stamp Toolbar (Bottom-Left) */}
       <div className="doodle-toolbar fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex flex-col items-start gap-1.5 sm:gap-2 select-none">
         {toast && (
-          <div className="rough-border bg-sticky px-2.5 py-1 font-mono text-[11px] sm:text-xs font-bold text-ink shadow-[2px_2px_0_0_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
+          <div className="rough-border bg-sticky px-2.5 py-1 font-mono text-[11px] sm:text-xs font-bold text-ink shadow-[2px_2px_0_0.5px_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
             {toast}
           </div>
         )}
@@ -216,7 +216,7 @@ export default function DoodleCanvas() {
             onClick={toggleMode}
             className={`rough-border flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 font-mono text-[11px] sm:text-xs font-bold transition-all ${
               stampMode
-                ? "bg-sticky text-ink shadow-[4px_4px_0_0_var(--ink)] -translate-y-0.5"
+                ? "bg-sticky text-ink shadow-[4px_4px_0_0.5px_var(--ink)] -translate-y-0.5"
                 : "bg-paper text-ink hover:bg-paper-alt"
             }`}>
             <Stamp className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -237,7 +237,7 @@ export default function DoodleCanvas() {
 
         {/* Sticker Selector Palette (Expanded when stampMode is active) */}
         {stampMode && (
-          <div className="rough-border flex items-center gap-1.5 bg-paper p-1.5 shadow-[4px_4px_0_0_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
+          <div className="rough-border flex items-center gap-1.5 bg-paper p-1.5 shadow-[4px_4px_0_0.5px_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
             {(Object.keys(STAMP_CONFIGS) as StampKind[]).map((kind) => {
               const isSelected = selectedStamp === kind;
               return (

@@ -37,12 +37,15 @@ export default function Reveal({
   return (
     <div
       ref={ref}
-      className={`transform-gpu will-change-transform ${className}`}
+      className={`will-change-transform ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible
           ? `translate3d(0, 0, 0) rotate(${rotate}deg)`
           : `translate3d(0, 20px, 0) rotate(${rotate * 1.6}deg)`,
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+        transformStyle: "preserve-3d",
         transition: `opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
       }}
     >

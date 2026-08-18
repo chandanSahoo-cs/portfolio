@@ -63,10 +63,14 @@ body {
   }
 }
 
-/* Tactile hand-drawn borders with springy micro-interactions */
+/* Tactile hand-drawn borders with springy micro-interactions & subpixel anti-aliasing */
 .rough-border {
   border: var(--border-rough) solid var(--ink);
-  box-shadow: 4px 4px 0 0 var(--ink);
+  box-shadow: 4px 4px 0 0.5px var(--ink);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  outline: 1px solid transparent;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease,
@@ -75,17 +79,21 @@ body {
 
 .rough-border:hover {
   transform: translate3d(-2px, -2px, 0);
-  box-shadow: 6px 6px 0 0 var(--ink);
+  box-shadow: 6px 6px 0 0.5px var(--ink);
 }
 
 .rough-border:active {
   transform: translate3d(2px, 2px, 0);
-  box-shadow: 2px 2px 0 0 var(--ink);
+  box-shadow: 2px 2px 0 0.5px var(--ink);
 }
 
 .rough-border-thick {
   border: 4px solid var(--ink);
-  box-shadow: 6px 6px 0 0 var(--ink);
+  box-shadow: 6px 6px 0 0.5px var(--ink);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  outline: 1px solid transparent;
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease;
@@ -93,14 +101,13 @@ body {
 
 .rough-border-thick:hover {
   transform: translate3d(-3px, -3px, 0);
-  box-shadow: 9px 9px 0 0 var(--ink);
+  box-shadow: 9px 9px 0 0.5px var(--ink);
 }
 
 .rough-border-thick:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px var(--ink);
+  transform: translate3d(2px, 2px, 0);
+  box-shadow: 2px 2px 0 0.5px var(--ink);
 }
-
 
 .tape {
   position: absolute;

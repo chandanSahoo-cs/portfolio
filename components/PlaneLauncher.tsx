@@ -266,7 +266,7 @@ export default function PlaneLauncher() {
       {/* Floating Tactical Airmail Stamp / Launcher Button */}
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-1.5 sm:gap-2 select-none">
         {showToast && (
-          <div className="animate-bounce font-hand text-base sm:text-lg font-bold text-marker-dark bg-sticky/90 px-2 sm:px-2.5 py-0.5 rounded border border-ink shadow-[2px_2px_0_0_var(--ink)]">
+          <div className="animate-bounce font-hand text-base sm:text-lg font-bold text-marker-dark bg-sticky/90 px-2 sm:px-2.5 py-0.5 rounded border border-ink shadow-[2px_2px_0_0.5px_var(--ink)]">
             ✈ Airmail sent!
           </div>
         )}
@@ -275,7 +275,7 @@ export default function PlaneLauncher() {
           type="button"
           onClick={() => launchPlane()}
           title="Fold & throw a paper plane (Press 'P')"
-          className="rough-border group relative flex items-center gap-1.5 sm:gap-2.5 bg-paper px-2.5 py-1.5 sm:px-4 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-ink transition-all hover:-translate-y-1 hover:bg-paper-alt hover:shadow-[6px_6px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
+          className="rough-border group relative flex items-center gap-1.5 sm:gap-2.5 bg-paper px-2.5 py-1.5 sm:px-4 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-ink transition-all hover:-translate-y-1 hover:bg-paper-alt hover:shadow-[6px_6px_0_0.5px_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0.5px_var(--ink)]"
         >
           {/* Postmark stamp style decoration */}
           <span className="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full border border-dashed border-ink bg-marker/10 text-marker transition-transform group-hover:rotate-45">
