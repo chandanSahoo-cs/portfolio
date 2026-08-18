@@ -197,25 +197,25 @@ export default function DoodleCanvas() {
       </div>
 
       {/* Floating Stamp Toolbar (Bottom-Left) */}
-      <div className="doodle-toolbar fixed bottom-6 left-6 z-50 flex flex-col items-start gap-2 select-none">
+      <div className="doodle-toolbar fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex flex-col items-start gap-1.5 sm:gap-2 select-none">
         {toast && (
-          <div className="rough-border bg-sticky px-3 py-1 font-mono text-xs font-bold text-ink shadow-[2px_2px_0_0_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
+          <div className="rough-border bg-sticky px-2.5 py-1 font-mono text-[11px] sm:text-xs font-bold text-ink shadow-[2px_2px_0_0_var(--ink)] animate-in fade-in slide-in-from-bottom-2">
             {toast}
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Main Toggle Button */}
           <button
             type="button"
             onClick={toggleMode}
-            className={`rough-border flex items-center gap-2 px-3.5 py-2 font-mono text-xs font-bold transition-all ${
+            className={`rough-border flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 font-mono text-[11px] sm:text-xs font-bold transition-all ${
               stampMode
                 ? "bg-sticky text-ink shadow-[4px_4px_0_0_var(--ink)] -translate-y-0.5"
                 : "bg-paper text-ink hover:bg-paper-alt"
             }`}>
-            <Stamp className="h-3.5 w-3.5" />
-            <span>{stampMode ? "STAMPING ON" : "DOODLE PAD"}</span>
+            <Stamp className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <span>{stampMode ? "STAMPING" : "DOODLE"}</span>
           </button>
 
           {/* Clear Button (Shown when stamps exist) */}
@@ -224,8 +224,8 @@ export default function DoodleCanvas() {
               type="button"
               onClick={clearStamps}
               title="Clear all placed doodles"
-              className="rough-border flex h-8 w-8 items-center justify-center bg-paper text-ink transition-all hover:bg-marker hover:text-paper">
-              <Eraser className="h-3.5 w-3.5" />
+              className="rough-border flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center bg-paper text-ink transition-all hover:bg-marker hover:text-paper">
+              <Eraser className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </button>
           )}
         </div>

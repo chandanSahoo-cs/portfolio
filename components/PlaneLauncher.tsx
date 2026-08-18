@@ -261,9 +261,9 @@ export default function PlaneLauncher() {
       </div>
 
       {/* Floating Tactical Airmail Stamp / Launcher Button */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 select-none">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-1.5 sm:gap-2 select-none">
         {showToast && (
-          <div className="animate-bounce font-hand text-lg font-bold text-marker-dark bg-sticky/90 px-2.5 py-0.5 rounded border border-ink shadow-[2px_2px_0_0_var(--ink)]">
+          <div className="animate-bounce font-hand text-base sm:text-lg font-bold text-marker-dark bg-sticky/90 px-2 sm:px-2.5 py-0.5 rounded border border-ink shadow-[2px_2px_0_0_var(--ink)]">
             ✈ Airmail sent!
           </div>
         )}
@@ -272,23 +272,25 @@ export default function PlaneLauncher() {
           type="button"
           onClick={() => launchPlane()}
           title="Fold & throw a paper plane (Press 'P')"
-          className="rough-border group relative flex items-center gap-2.5 bg-paper px-4 py-2.5 font-mono text-xs font-bold text-ink transition-all hover:-translate-y-1 hover:bg-paper-alt hover:shadow-[6px_6px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
+          className="rough-border group relative flex items-center gap-1.5 sm:gap-2.5 bg-paper px-2.5 py-1.5 sm:px-4 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-ink transition-all hover:-translate-y-1 hover:bg-paper-alt hover:shadow-[6px_6px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
         >
           {/* Postmark stamp style decoration */}
-          <span className="relative flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-ink bg-marker/10 text-marker transition-transform group-hover:rotate-45">
-            <Send className="h-3 w-3" />
+          <span className="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full border border-dashed border-ink bg-marker/10 text-marker transition-transform group-hover:rotate-45">
+            <Send className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           </span>
 
           <div className="text-left">
-            <div className="flex items-center gap-1.5 leading-none">
-              <span>THROW PLANE</span>
-              <span className="rounded bg-sticky px-1 py-0.2 text-[9px] text-ink">
+            <div className="flex items-center gap-1 leading-none">
+              <span className="hidden xs:inline">THROW</span>
+              <span className="xs:hidden">PLANE</span>
+              <span className="hidden sm:inline">PLANE</span>
+              <span className="hidden sm:inline rounded bg-sticky px-1 py-0.2 text-[9px] text-ink">
                 P
               </span>
             </div>
             {launchCount > 0 && (
-              <span className="font-mono text-[9px] text-ink-soft">
-                {launchCount} launched
+              <span className="hidden sm:block font-mono text-[9px] text-ink-soft">
+                {launchCount} thrown
               </span>
             )}
           </div>
