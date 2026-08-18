@@ -1,5 +1,6 @@
 import Reveal from "./Reveal";
 import SectionLabel from "./SectionLabel";
+import { SeeMore } from "./SeeMore";
 
 const EXPERIENCE = [
   {
@@ -14,10 +15,13 @@ export default function ExperienceSection() {
   return (
     <section id="experience" className="mx-auto max-w-5xl px-6 py-20">
       <SectionLabel index="03" title="where I've worked" />
-      <div className="mt-10 space-y-6">
-        {EXPERIENCE.map((e, i) => (
+      <SeeMore
+        initialCount={3}
+        items={EXPERIENCE}
+        className="mt-10 space-y-6"
+        renderItem={(e, i) => (
           <Reveal
-            key={e.role + e.org}
+            key={i}
             rotate={i % 2 === 0 ? -0.6 : 0.6}
             delay={i * 90}>
             <div className="rough-border flex flex-col gap-2 bg-paper p-6 sm:flex-row sm:items-start sm:justify-between">
@@ -33,8 +37,8 @@ export default function ExperienceSection() {
               </span>
             </div>
           </Reveal>
-        ))}
-      </div>
+        )}
+      />
     </section>
   );
 }

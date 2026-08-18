@@ -1,3 +1,4 @@
+"use client"
 import CompetitiveSections from "@/components/CompetitiveSection";
 import ContactSection from "@/components/ContactSection";
 import { SquiggleDivider } from "@/components/Doodles";
@@ -94,9 +95,6 @@ export default function Home() {
             <a href="#competitive" className="hover:text-leaf">
               competitive
             </a>
-            {/* <a href="#blogs" className="hover:text-marker">
-              blogs
-            </a> */}
             {/* <a href="#books" className="hover:text-leaf">
               books
             </a> */}
@@ -198,33 +196,6 @@ export default function Home() {
 
       {/* COMPETITIVE PROGRAMMING */}
       <CompetitiveSections />
-
-      {/* BLOGS
-      <section id="blogs" className="mx-auto max-w-5xl px-6 py-20">
-        <SectionLabel index="06" title="writing" />
-        <div className="mt-10 space-y-5">
-          {BLOGS.map((b, i) => (
-            <Reveal
-              key={b.title}
-              rotate={i % 2 === 0 ? -0.4 : 0.4}
-              delay={i * 80}>
-              <a
-                href="#"
-                className="rough-border flex flex-col gap-1 bg-paper p-6 transition hover:-translate-y-1 sm:flex-row sm:items-baseline sm:justify-between">
-                <div>
-                  <h3 className="font-display text-lg">{b.title}</h3>
-                  <p className="mt-1 font-body text-sm text-ink-soft">
-                    {b.excerpt}
-                  </p>
-                </div>
-                <span className="font-mono text-xs text-marker-dark whitespace-nowrap">
-                  {b.date}
-                </span>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      </section> */}
 
       {/* BOOKS */}
       {/* <section id="books" className="mx-auto max-w-5xl px-6 py-20">

@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "./Reveal";
 import SectionLabel from "./SectionLabel";
+import { SeeMore } from "./SeeMore";
 
 const PROJECTS = [
   {
@@ -62,9 +65,12 @@ export default function ProjectSection() {
   return (
     <section id="projects" className="relative mx-auto max-w-5xl px-6 py-20">
       <SectionLabel index="01" title="things I've built" />
-      <div className="mt-10 grid gap-8 sm:grid-cols-2">
-        {PROJECTS.map((p, i) => (
-          <Reveal key={p.name} rotate={i % 2 === 0 ? -1.5 : 1.5} delay={i * 80}>
+      <SeeMore
+        initialCount={2}
+        items={PROJECTS}
+        className="mt-10 grid gap-8 sm:grid-cols-2"
+        renderItem={(p, i) => (
+          <Reveal key={i} rotate={i % 2 === 0 ? -1.5 : 1.5} delay={i * 80}>
             <div className="rough-border-thick relative flex h-full flex-col overflow-hidden bg-paper transition hover:-translate-y-1">
               <div className="relative aspect-12/6 w-full overflow-hidden bg-ink/5">
                 <Image
@@ -129,17 +135,20 @@ export default function ProjectSection() {
               </div>
             </div>
           </Reveal>
-        ))}
-      </div>
+        )}
+      />
 
       <p className="max-w-xl font-hand text-2xl text-ink-soft pt-15">
         Weekend builds, browser extensions, and things I made because I wanted
         them to exist.
       </p>
 
-      <div className="mt-5 grid gap-8 sm:grid-cols-3">
-        {FUN_PROJECTS.map((p, i) => (
-          <Reveal key={p.name} rotate={i % 2 === 0 ? 1.5 : -1.5} delay={i * 80}>
+      <SeeMore
+        initialCount={3}
+        items={FUN_PROJECTS}
+        className="mt-5 grid gap-8 sm:grid-cols-3"
+        renderItem={(p, i) => (
+          <Reveal key={i} rotate={i % 2 === 0 ? 1.5 : -1.5} delay={i * 80}>
             <div className="rough-border relative block h-full overflow-hidden bg-paper-alt transition hover:-translate-y-1">
               <div className="p-5">
                 <span
@@ -175,8 +184,8 @@ export default function ProjectSection() {
               </div>
             </div>
           </Reveal>
-        ))}
-      </div>
+        )}
+      />
     </section>
   );
 }
