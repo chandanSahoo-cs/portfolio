@@ -52,12 +52,12 @@ export default function ScrollDoodles() {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-0 h-full w-full overflow-hidden select-none">
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden select-none">
       {/* 1. HERO MARGIN: Hand-drawn Coffee Mug with Steam (Right side) */}
       <div
         data-speed="0.25"
         data-rotate="4"
-        className="scroll-doodle-item absolute top-[380px] right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
+        className="scroll-doodle-item absolute top-95 right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-center">
           <svg width="60" height="70" viewBox="0 0 60 70" fill="none">
             {/* Steam lines */}
@@ -108,7 +108,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.3"
         data-rotate="-6"
-        className="scroll-doodle-item absolute top-[1100px] left-3 lg:left-10 hidden md:block opacity-65 transition-opacity hover:opacity-100">
+        className="scroll-doodle-item absolute top-275 left-3 lg:left-10 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-start">
           <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
             {/* Curly bracket */}
@@ -134,7 +134,7 @@ export default function ScrollDoodles() {
               strokeWidth="1"
             />
           </svg>
-          <span className="flex items-center gap-1 font-hand text-xs text-ink-soft rotate-[6deg] -mt-1">
+          <span className="flex items-center gap-1 font-hand text-xs text-ink-soft rotate-6 -mt-1">
             ship it! <Rocket size={16} />
           </span>
         </div>
@@ -226,7 +226,7 @@ export default function ScrollDoodles() {
             <rect x="26" y="22" width="8" height="16" fill="var(--sticky)" />
             <rect x="36" y="22" width="8" height="16" fill="var(--leaf)" />
           </svg>
-          <span className="flex items-center gap-1 font-hand text-xs text-leaf-dark font-bold rotate-[-3deg]">
+          <span className="flex items-center gap-1 font-hand text-xs text-leaf-dark font-bold -rotate-3">
             100% charged <Zap size={16}/>
           </span>
         </div>

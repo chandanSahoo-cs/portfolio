@@ -24,14 +24,14 @@ const NAV_ITEMS: NavItem[] = [
     name: "experience",
     href: "#experience",
     id: "experience",
-    color: "var(--marker)",
+    color: "var(--leaf-dark)",
     path: "M 16 22 C 13 8, 38 3, 68 3 C 104 3, 120 10, 118 23 C 116 36, 88 41, 54 41 C 20 41, 4 35, 6 22 C 8 10, 26 4, 54 3.5",
   },
   {
     name: "skills",
     href: "#skills",
     id: "skills",
-    color: "var(--marker)",
+    color: "var(--sticky)",
     path: "M 12 20 C 10 7, 28 3, 52 3 C 82 3, 102 9, 100 22 C 98 35, 76 41, 46 41 C 18 41, 3 34, 5 20 C 6 9, 20 4.5, 42 4",
   },
   {
@@ -191,7 +191,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full select-none">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-3 pb-2">
         <nav
-          className={`flex items-center justify-between rounded-full bg-paper/90 px-5 py-2.5 backdrop-blur-md transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex items-center justify-between rounded-full bg-paper/90 px-5 py-2.5 backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             scrolled
               ? "rough-border shadow-[4px_4px_0_0_var(--ink)] translate-y-0"
               : "border-2 border-ink/20 shadow-[2px_2px_0_0_rgba(26,26,26,0.1)]"
