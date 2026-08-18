@@ -281,42 +281,6 @@ export default function ScrollDoodles() {
           </span>
         </div>
       </div>
-
-      {/* 6. PROFILES MARGIN: Postmark Stamp & Airmail (Left side) */}
-      <div
-        data-speed="0.26"
-        data-rotate="-5"
-        className="scroll-doodle-item absolute top-[4450px] left-4 lg:left-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
-        <div className="flex flex-col items-start">
-          <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
-            {/* Postmark stamp circle */}
-            <circle
-              cx="35"
-              cy="35"
-              r="28"
-              fill="none"
-              stroke="var(--marker)"
-              strokeWidth="1.8"
-              strokeDasharray="4 3"
-            />
-            {/* Wavy cancellation lines */}
-            <path
-              d="M 15 30 Q 25 24, 35 30 T 55 30"
-              stroke="var(--marker)"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M 15 40 Q 25 34, 35 40 T 55 40"
-              stroke="var(--marker)"
-              strokeWidth="1.4"
-            />
-            <circle cx="35" cy="35" r="4" fill="var(--marker)" />
-          </svg>
-          <span className="font-mono text-[9px] text-marker font-bold tracking-widest uppercase">
-            PAR AVION ✉
-          </span>
-        </div>
-      </div>
     </div>
   );
 }
