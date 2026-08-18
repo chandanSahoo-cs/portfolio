@@ -97,9 +97,10 @@ body {
 }
 
 .rough-border-thick:active {
-  transform: translate3d(2px, 2px, 0);
-  box-shadow: 3px 3px 0 0 var(--ink);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--ink);
 }
+
 
 .tape {
   position: absolute;

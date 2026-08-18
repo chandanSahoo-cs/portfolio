@@ -99,13 +99,14 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-10 shrink-0">
+      {/* Stickman with Hardware-Accelerated Floating Keyframe Animation */}
+      <div className="animate-stickman-float relative z-10 shrink-0 select-none">
         <Image
           alt="drinking-coffee"
           src="/drinking-coffee.png"
           width="480"
           height="550"
-          className="max-w-[280px] sm:max-w-[360px] md:max-w-[420px] h-auto object-contain"
+          className="max-w-[280px] sm:max-w-[360px] md:max-w-[420px] h-auto object-contain pointer-events-auto"
           priority
         />
       </div>
