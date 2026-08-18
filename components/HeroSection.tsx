@@ -1,4 +1,4 @@
-import Image from "next/image";
+import HeroStickman from "./HeroStickman";
 import { ScribbleUnderline } from "./Doodles";
 
 export default function HeroSection() {
@@ -99,17 +99,8 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Stickman with Hardware-Accelerated Floating Keyframe Animation */}
-      <div className="animate-stickman-float relative z-10 shrink-0 select-none">
-        <Image
-          alt="drinking-coffee"
-          src="/drinking-coffee.png"
-          width="480"
-          height="550"
-          className="max-w-[280px] sm:max-w-[360px] md:max-w-[420px] h-auto object-contain pointer-events-auto"
-          priority
-        />
-      </div>
+      {/* Stickman PNG with left-to-right reveal animation on load */}
+      <HeroStickman />
     </section>
   );
 }
