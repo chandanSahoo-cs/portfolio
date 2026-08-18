@@ -11,6 +11,7 @@ import {
   Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { soundManager } from "@/lib/audio";
 
 type StampKind = "star" | "coffee" | "sparkle" | "heart" | "checkmark";
 
@@ -53,6 +54,8 @@ export default function DoodleCanvas() {
         return;
       }
 
+      soundManager.playStamp();
+
       const x = e.pageX;
       const y = e.pageY;
       const rotation = (Math.random() - 0.5) * 35;
@@ -77,6 +80,7 @@ export default function DoodleCanvas() {
   }, [stampMode, selectedStamp]);
 
   const toggleMode = () => {
+    soundManager.playClick();
     const next = !stampMode;
     setStampMode(next);
     setToast(
@@ -90,6 +94,7 @@ export default function DoodleCanvas() {
   };
 
   const clearStamps = () => {
+    soundManager.playClick();
     setStamps([]);
     setToast(
       <span className="flex items-center gap-2">

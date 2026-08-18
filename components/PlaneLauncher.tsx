@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Send, Wind, Sparkles } from "lucide-react";
+import { soundManager } from "@/lib/audio";
 
 interface FlyingPlane {
   id: number;
@@ -41,6 +42,8 @@ export default function PlaneLauncher() {
 
   // Spawn a new paper plane from given coordinates
   const launchPlane = useCallback((fromX?: number, fromY?: number) => {
+    soundManager.playWhoosh();
+    
     const isMobile = window.innerWidth < 768;
     const spawnX = fromX !== undefined ? fromX : (isMobile ? window.innerWidth * 0.15 : 80);
     const spawnY = fromY !== undefined ? fromY : (window.innerHeight - 100);

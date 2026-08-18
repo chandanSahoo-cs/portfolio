@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Volume2, VolumeX } from "lucide-react";
+import { soundManager } from "@/lib/audio";
 
 interface NavItem {
   name: string;
@@ -24,14 +25,14 @@ const NAV_ITEMS: NavItem[] = [
     name: "experience",
     href: "#experience",
     id: "experience",
-    color: "var(--leaf-dark)",
+    color: "var(--marker)",
     path: "M 16 22 C 13 8, 38 3, 68 3 C 104 3, 120 10, 118 23 C 116 36, 88 41, 54 41 C 20 41, 4 35, 6 22 C 8 10, 26 4, 54 3.5",
   },
   {
     name: "skills",
     href: "#skills",
     id: "skills",
-    color: "var(--sticky)",
+    color: "var(--marker)",
     path: "M 12 20 C 10 7, 28 3, 52 3 C 82 3, 102 9, 100 22 C 98 35, 76 41, 46 41 C 18 41, 3 34, 5 20 C 6 9, 20 4.5, 42 4",
   },
   {
@@ -54,10 +55,23 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState<string>("top");
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
 
   const hoveredRef = useRef<string | null>(null);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const activeTweenRef = useRef<Map<string, gsap.core.Tween>>(new Map());
+
+  // Initialize sound state from soundManager
+  useEffect(() => {
+    setSoundEnabled(soundManager.isEnabled());
+  }, []);
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    soundManager.setEnabled(next);
+    if (next) soundManager.playClick();
+  };
 
   // Smooth drawing using GSAP power3.out
   const drawPath = useCallback((id: string, duration = 0.5) => {
@@ -154,6 +168,8 @@ export default function Navbar() {
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
+    soundManager.playScribble();
+
     const length = pathEl.getTotalLength();
     gsap.set(pathEl, {
       strokeDasharray: length,
@@ -175,6 +191,7 @@ export default function Navbar() {
   // Ultra-smooth custom scroll jump
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    soundManager.playClick();
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {
@@ -191,7 +208,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full select-none">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-3 pb-2">
         <nav
-          className={`flex items-center justify-between rounded-full bg-paper/90 px-5 py-2.5 backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex items-center justify-between rounded-full bg-paper/90 px-4 sm:px-5 py-2.5 backdrop-blur-md transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${
             scrolled
               ? "rough-border shadow-[4px_4px_0_0_var(--ink)] translate-y-0"
               : "border-2 border-ink/20 shadow-[2px_2px_0_0_rgba(26,26,26,0.1)]"
@@ -212,7 +229,7 @@ export default function Navbar() {
           </a>
 
           {/* Desktop Navigation Links with Live-Drawn Circles */}
-          <div className="hidden items-center gap-1.5 md:flex">
+          <div className="hidden items-center gap-1 md:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
 
@@ -258,12 +275,37 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Contact Action & Mobile Menu Toggle */}
-          <div className="flex items-center gap-3">
+          {/* Actions: Sound FX Toggle, Contact, Mobile Menu */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Tactile Audio SFX Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleSound}
+              title={soundEnabled ? "Mute Web Audio SFX" : "Enable Tactile Paper & Pen SFX"}
+              className={`rough-border flex h-8 items-center gap-1.5 px-2 font-mono text-[11px] font-bold transition-all ${
+                soundEnabled
+                  ? "bg-sticky text-ink shadow-[2px_2px_0_0_var(--ink)]"
+                  : "bg-paper text-ink-soft hover:bg-paper-alt"
+              }`}
+            >
+              {soundEnabled ? (
+                <>
+                  <Volume2 className="h-3.5 w-3.5 text-marker" />
+                  <span className="hidden sm:inline">SFX</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="h-3.5 w-3.5 opacity-60" />
+                  <span className="hidden sm:inline opacity-60">MUTED</span>
+                </>
+              )}
+            </button>
+
+            {/* Contact Action */}
             <a
               href="#contact"
               onClick={(e) => scrollToSection(e, "#contact")}
-              className="rough-border relative overflow-hidden bg-marker px-4 py-1.5 font-mono text-xs font-bold text-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
+              className="rough-border relative overflow-hidden bg-marker px-3.5 sm:px-4 py-1.5 font-mono text-xs font-bold text-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0_var(--ink)]"
             >
               say hi
             </a>
@@ -271,7 +313,10 @@ export default function Navbar() {
             {/* Mobile hamburger button */}
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                soundManager.playClick();
+                setMobileMenuOpen(!mobileMenuOpen);
+              }}
               className="rough-border flex h-8 w-8 items-center justify-center bg-paper p-1 text-ink transition-all md:hidden"
               aria-label="Toggle navigation menu"
             >
