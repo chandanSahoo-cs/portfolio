@@ -1,6 +1,7 @@
 "use client"
 import CompetitiveSections from "@/components/CompetitiveSection";
 import ContactSection from "@/components/ContactSection";
+import DoodleCanvas from "@/components/DoodleCanvas";
 import { SquiggleDivider } from "@/components/Doodles";
 import ExperienceSection from "@/components/ExperienceSection";
 import HeroSection from "@/components/HeroSection";
@@ -60,6 +61,7 @@ export default function Home() {
     <div className="relative w-full overflow-x-clip">
       <ScrollDoodles />
       <PlaneLauncher />
+      <DoodleCanvas />
       {/* NAV */}
       <Navbar />
 
@@ -68,77 +70,6 @@ export default function Home() {
 
       {/* PROJECTS */}
       <ProjectSection />
-      {/* <section id="projects" className="relative mx-auto max-w-5xl px-6 py-20">
-        <SectionLabel index="01" title="things I've built" />
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          {PROJECTS.map((p, i) => (
-            <Reveal
-              key={p.name}
-              rotate={i % 2 === 0 ? -1.5 : 1.5}
-              delay={i * 80}>
-              <Link
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rough-border-thick relative block h-full overflow-hidden bg-paper transition hover:-translate-y-1">
-                <ProjectPreview kind={p.preview} accent={p.color} />
-                <div className="p-6">
-                  <span
-                    className="inline-block border border-ink px-2 py-0.5 font-mono text-[11px] font-bold"
-                    style={{ background: p.color }}>
-                    {p.tag}
-                  </span>
-                  <h3 className="mt-3 font-display text-2xl">{p.name}</h3>
-                  <p className="mt-3 font-body text-[15px] leading-relaxed text-ink-soft">
-                    {p.desc}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {p.stack.map((s) => (
-                      <span
-                        key={s}
-                        className="border border-ink px-2 py-0.5 font-mono text-[11px]">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-        <p className="max-w-xl font-hand text-2xl text-ink-soft pt-15">
-          Weekend builds, browser extensions, and things I made because I wanted
-          them to exist.
-        </p>
-        <div className="mt-5 grid gap-8 sm:grid-cols-3">
-          {FUN_PROJECTS.map((p, i) => (
-            <Reveal
-              key={p.name}
-              rotate={i % 2 === 0 ? 1.5 : -1.5}
-              delay={i * 80}>
-              <a
-                href={p.url}
-                className="rough-border relative block h-full overflow-hidden bg-paper-alt transition hover:-translate-y-1">
-                <ProjectPreview kind={p.preview} accent={p.color} />
-                <div className="p-5">
-                  <span
-                    className="inline-block border border-ink px-2 py-0.5 font-mono text-[10px] font-bold"
-                    style={{ background: p.color }}>
-                    {p.tag}
-                  </span>
-                  <h3 className="mt-3 font-display text-lg">{p.name}</h3>
-                  <p className="mt-2 font-body text-sm text-ink-soft">
-                    {p.desc}
-                  </p>
-                  <p className="mt-3 border-t border-ink/15 pt-3 font-mono text-xs text-marker-dark">
-                    {p.stat}
-                  </p>
-                </div>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      </section> */}
 
       <div className="py-4">
         <SquiggleDivider />

@@ -72,18 +72,29 @@ export default function HeroSection() {
           I build backend systems that don&apos;t fall over, and the occasional
           weird little frontend toy.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           <a
             href="#projects"
-            className="rough-border bg-ink px-5 py-3 font-mono text-sm font-bold text-paper transition hover:-translate-y-1"
+            className="rough-border bg-ink px-5 py-3 font-mono text-sm font-bold text-paper transition-all hover:bg-ink-soft hover:text-paper active:translate-y-0"
           >
             see the work ↓
           </a>
           <a
             href="#contact"
-            className="rough-border bg-paper px-5 py-3 font-mono text-sm font-bold text-ink transition hover:-translate-y-1"
+            className="rough-border bg-paper px-5 py-3 font-mono text-sm font-bold text-ink transition-all hover:bg-paper-alt active:translate-y-0"
           >
             get in touch
+          </a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rough-border group relative inline-flex items-center gap-2 bg-sticky px-4 py-3 font-mono text-xs font-bold text-ink transition-all hover:bg-sticky/90 active:translate-y-0"
+          >
+            <span>resume / cv ↗</span>
+            <span className="rounded border border-ink/40 bg-paper px-1.5 py-0.5 text-[9px] uppercase tracking-wider group-hover:bg-marker group-hover:text-paper transition-colors">
+              PDF
+            </span>
           </a>
         </div>
       </div>

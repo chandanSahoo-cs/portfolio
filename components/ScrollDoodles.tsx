@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Coffee, Rocket, Zap } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,10 +15,14 @@ export default function ScrollDoodles() {
 
     const ctx = gsap.context(() => {
       // Parallax float on each marginal doodle
-      const items = containerRef.current?.querySelectorAll(".scroll-doodle-item");
+      const items = containerRef.current?.querySelectorAll(
+        ".scroll-doodle-item",
+      );
       items?.forEach((item) => {
         const speed = parseFloat((item as HTMLElement).dataset.speed || "0.2");
-        const rotationAmount = parseFloat((item as HTMLElement).dataset.rotate || "5");
+        const rotationAmount = parseFloat(
+          (item as HTMLElement).dataset.rotate || "5",
+        );
 
         gsap.fromTo(
           item,
@@ -35,7 +40,7 @@ export default function ScrollDoodles() {
               end: "bottom top",
               scrub: 1.2,
             },
-          }
+          },
         );
       });
     }, containerRef);
@@ -47,14 +52,12 @@ export default function ScrollDoodles() {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-0 h-full w-full overflow-hidden select-none"
-    >
+      className="pointer-events-none absolute inset-0 -z-0 h-full w-full overflow-hidden select-none">
       {/* 1. HERO MARGIN: Hand-drawn Coffee Mug with Steam (Right side) */}
       <div
         data-speed="0.25"
         data-rotate="4"
-        className="scroll-doodle-item absolute top-[380px] right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[380px] right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-center">
           <svg width="60" height="70" viewBox="0 0 60 70" fill="none">
             {/* Steam lines */}
@@ -95,8 +98,8 @@ export default function ScrollDoodles() {
               strokeLinecap="round"
             />
           </svg>
-          <span className="font-hand text-xs text-marker-dark rotate-[-4deg]">
-            fuel.js ☕
+          <span className="flex items-center gap-1 font-hand text-xs text-marker-dark rotate-[-4deg]">
+            fuel.js <Coffee size={16} />
           </span>
         </div>
       </div>
@@ -105,8 +108,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.3"
         data-rotate="-6"
-        className="scroll-doodle-item absolute top-[1100px] left-3 lg:left-10 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[1100px] left-3 lg:left-10 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-start">
           <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
             {/* Curly bracket */}
@@ -132,8 +134,8 @@ export default function ScrollDoodles() {
               strokeWidth="1"
             />
           </svg>
-          <span className="font-hand text-xs text-ink-soft rotate-[6deg] -mt-1">
-            ship it! 🚀
+          <span className="flex items-center gap-1 font-hand text-xs text-ink-soft rotate-[6deg] -mt-1">
+            ship it! <Rocket size={16} />
           </span>
         </div>
       </div>
@@ -142,8 +144,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.22"
         data-rotate="5"
-        className="scroll-doodle-item absolute top-[1950px] right-3 lg:right-10 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[1950px] right-3 lg:right-10 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-end">
           <svg width="75" height="90" viewBox="0 0 75 90" fill="none">
             {/* Main branch stem */}
@@ -161,10 +162,38 @@ export default function ScrollDoodles() {
               strokeLinecap="round"
             />
             {/* Commit nodes */}
-            <circle cx="25" cy="20" r="4.5" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" />
-            <circle cx="25" cy="48" r="4.5" fill="var(--sticky)" stroke="var(--ink)" strokeWidth="2" />
-            <circle cx="55" cy="65" r="4.5" fill="var(--leaf)" stroke="var(--ink)" strokeWidth="2" />
-            <circle cx="25" cy="76" r="4.5" fill="var(--marker)" stroke="var(--ink)" strokeWidth="2" />
+            <circle
+              cx="25"
+              cy="20"
+              r="4.5"
+              fill="var(--paper)"
+              stroke="var(--ink)"
+              strokeWidth="2"
+            />
+            <circle
+              cx="25"
+              cy="48"
+              r="4.5"
+              fill="var(--sticky)"
+              stroke="var(--ink)"
+              strokeWidth="2"
+            />
+            <circle
+              cx="55"
+              cy="65"
+              r="4.5"
+              fill="var(--leaf)"
+              stroke="var(--ink)"
+              strokeWidth="2"
+            />
+            <circle
+              cx="25"
+              cy="76"
+              r="4.5"
+              fill="var(--marker)"
+              stroke="var(--ink)"
+              strokeWidth="2"
+            />
           </svg>
           <span className="font-mono text-[10px] text-leaf-dark font-bold">
             git merge --prod
@@ -176,8 +205,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.28"
         data-rotate="-4"
-        className="scroll-doodle-item absolute top-[2800px] left-4 lg:left-12 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[2800px] left-4 lg:left-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-start">
           <svg width="65" height="65" viewBox="0 0 65 65" fill="none">
             {/* Battery outline */}
@@ -198,8 +226,8 @@ export default function ScrollDoodles() {
             <rect x="26" y="22" width="8" height="16" fill="var(--sticky)" />
             <rect x="36" y="22" width="8" height="16" fill="var(--leaf)" />
           </svg>
-          <span className="font-hand text-xs text-leaf-dark font-bold rotate-[-3deg]">
-            100% charged ⚡
+          <span className="flex items-center gap-1 font-hand text-xs text-leaf-dark font-bold rotate-[-3deg]">
+            100% charged <Zap size={16}/>
           </span>
         </div>
       </div>
@@ -208,8 +236,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.24"
         data-rotate="6"
-        className="scroll-doodle-item absolute top-[3650px] right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[3650px] right-4 lg:right-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-center">
           <svg width="65" height="70" viewBox="0 0 65 70" fill="none">
             {/* Trophy Cup */}
@@ -233,7 +260,11 @@ export default function ScrollDoodles() {
               strokeLinecap="round"
             />
             {/* Stem & Base */}
-            <path d="M 32.5 45 L 32.5 56" stroke="var(--ink)" strokeWidth="2.5" />
+            <path
+              d="M 32.5 45 L 32.5 56"
+              stroke="var(--ink)"
+              strokeWidth="2.5"
+            />
             <rect
               x="20"
               y="56"
@@ -255,8 +286,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.26"
         data-rotate="-5"
-        className="scroll-doodle-item absolute top-[4450px] left-4 lg:left-12 hidden md:block opacity-65 transition-opacity hover:opacity-100"
-      >
+        className="scroll-doodle-item absolute top-[4450px] left-4 lg:left-12 hidden md:block opacity-65 transition-opacity hover:opacity-100">
         <div className="flex flex-col items-start">
           <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
             {/* Postmark stamp circle */}
