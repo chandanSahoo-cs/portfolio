@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Send, Wind, Sparkles } from "lucide-react";
+import { Send } from "lucide-react";
 import { soundManager } from "@/lib/audio";
 
 interface FlyingPlane {
