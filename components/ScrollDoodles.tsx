@@ -203,7 +203,7 @@ export default function ScrollDoodles() {
       <div
         data-speed="0.3"
         data-rotate="-6"
-        className="scroll-doodle-item absolute top-[1100px] left-3 lg:left-10 hidden md:block opacity-80 transition-opacity hover:opacity-100"
+        className="scroll-doodle-item absolute top-275 left-3 lg:left-10 hidden md:block opacity-80 transition-opacity hover:opacity-100"
       >
         <div className="flex flex-col items-start">
           <svg width="70" height="70" viewBox="0 0 70 70" fill="none" className="overflow-visible">

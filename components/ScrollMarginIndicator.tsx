@@ -78,7 +78,7 @@ export default function ScrollMarginIndicator() {
 
         {/* Drawn Pencil Line (fills as you scroll) */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] bg-marker/80 transition-all duration-75 ease-out rounded-full"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 bg-marker/80 transition-all duration-75 ease-out rounded-full"
           style={{ height: `${progress * 100}%` }}
         />
 
@@ -86,7 +86,7 @@ export default function ScrollMarginIndicator() {
         {[0.15, 0.38, 0.58, 0.75, 0.92].map((pos, idx) => (
           <div
             key={idx}
-            className="absolute left-1/2 -translate-x-1/2 w-2 h-[1px] bg-ink/30"
+            className="absolute left-1/2 -translate-x-1/2 w-2 h-px bg-ink/30"
             style={{ top: `${pos * 100}%` }}
           />
         ))}

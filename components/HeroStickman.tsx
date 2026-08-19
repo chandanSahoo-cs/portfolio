@@ -50,12 +50,12 @@ export default function HeroStickman() {
   return (
     <div
       ref={containerRef}
-      className="relative flex-shrink-0 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] flex items-center justify-center select-none will-change-transform"
+      className="relative shrink-0 w-full max-w-70 sm:max-w-85 md:max-w-95 flex items-center justify-center select-none will-change-transform"
     >
       <div
         ref={imageWrapperRef}
         style={{ clipPath: "inset(0% 100% 0% 0%)", opacity: 0 }}
-        className="relative w-full aspect-[4/3] flex items-center justify-center will-change-[clip-path,opacity]"
+        className="relative w-full aspect-4/3 flex items-center justify-center will-change-[clip-path,opacity]"
       >
         <Image
           src="/drinking-coffee.png"

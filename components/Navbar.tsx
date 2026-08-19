@@ -208,7 +208,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full select-none">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-3 pb-2">
         <nav
-          className={`flex items-center justify-between rounded-full bg-paper/90 px-4 sm:px-5 py-2.5 backdrop-blur-md transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex items-center justify-between rounded-full bg-paper/90 px-4 sm:px-5 py-2.5 backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             scrolled
               ? "rough-border translate-y-0"
               : "border-2 border-ink/20 shadow-[2px_2px_0_0.5px_rgba(26,26,26,0.1)]"
