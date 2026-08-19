@@ -13,8 +13,10 @@ export default function ScrollDoodles() {
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
 
-    const ctx = gsap.context(() => {
-      const doodleItems = containerRef.current?.querySelectorAll<HTMLElement>(".scroll-doodle-item");
+    let ctx: gsap.Context | null = null;
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        const doodleItems = containerRef.current?.querySelectorAll<HTMLElement>(".scroll-doodle-item");
 
       doodleItems?.forEach((item) => {
         const speed = parseFloat(item.dataset.speed || "0.2");
@@ -125,8 +127,12 @@ export default function ScrollDoodles() {
         }
       });
     }, containerRef);
+    }, 200);
 
-    return () => ctx.revert();
+    return () => {
+      clearTimeout(timer);
+      ctx?.revert();
+    };
   }, []);
 
   return (

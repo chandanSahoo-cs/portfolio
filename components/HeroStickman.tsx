@@ -12,7 +12,7 @@ export default function HeroStickman() {
     if (!imageWrapperRef.current || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Reveal the PNG from left to right smoothly without trailing lag
+      // Reveal the stickman illustration smoothly from left to right
       gsap.fromTo(
         imageWrapperRef.current,
         {
@@ -22,9 +22,9 @@ export default function HeroStickman() {
         {
           clipPath: "inset(0% 0% 0% 0%)",
           opacity: 1,
-          duration: 0.85,
-          ease: "power1.out",
-          delay: 0.05,
+          duration: 1.4,
+          ease: "power2.out",
+          delay: 0.15,
           onComplete: () => {
             // Remove clip-path layer once finished to prevent GPU compositor overhead
             if (imageWrapperRef.current) {
@@ -54,6 +54,7 @@ export default function HeroStickman() {
     >
       <div
         ref={imageWrapperRef}
+        style={{ clipPath: "inset(0% 100% 0% 0%)", opacity: 0 }}
         className="relative w-full aspect-[4/3] flex items-center justify-center will-change-[clip-path,opacity]"
       >
         <Image
@@ -68,3 +69,7 @@ export default function HeroStickman() {
     </div>
   );
 }
+
+
+
+
