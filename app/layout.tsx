@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Chandan Sahoo — Software Engineer",
   description:
     "Portfolio of Chandan Sahoo, software engineer. Sketchy, loud, hand-built.",
+    icons :{
+      icon : "/logo.svg"
+    }
 };
 
 export const viewport: Viewport = {
