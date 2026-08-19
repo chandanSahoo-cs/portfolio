@@ -40,6 +40,8 @@ export default function PlaneLauncher() {
   // Keep planesRef in sync with state for animation loop
   planesRef.current = planes;
 
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   // Spawn a new paper plane from given coordinates
   const launchPlane = useCallback((fromX?: number, fromY?: number) => {
     soundManager.playWhoosh();
@@ -77,7 +79,15 @@ export default function PlaneLauncher() {
     setLaunchCount((c) => c + 1);
 
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 2200);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), 2200);
+  }, []);
+
+  // Cleanup toast timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
   }, []);
 
   // Keyboard shortcut (press 'P' or 'Space' on focus)
@@ -100,8 +110,10 @@ export default function PlaneLauncher() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [launchPlane]);
 
-  // Animation frame update loop
+  // Animation frame update loop - only runs when planes are in flight
   useEffect(() => {
+    if (planes.length === 0) return;
+
     let lastTime = performance.now();
 
     const animate = (time: number) => {
@@ -148,9 +160,10 @@ export default function PlaneLauncher() {
           .filter((p) => p.life < p.maxLife && p.opacity > 0.02);
 
         setPlanes(updatedPlanes);
+        if (updatedPlanes.length > 0) {
+          requestRef.current = requestAnimationFrame(animate);
+        }
       }
-
-      requestRef.current = requestAnimationFrame(animate);
     };
 
     requestRef.current = requestAnimationFrame(animate);
@@ -158,7 +171,7 @@ export default function PlaneLauncher() {
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, []);
+  }, [planes.length > 0]);
 
   return (
     <>

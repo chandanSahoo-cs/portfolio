@@ -20,6 +20,15 @@ export default function ScrollMarginIndicator() {
       { id: "contact", label: "// msg" },
     ];
 
+    // Cache elements to avoid repetitive querySelector/getElementById on every frame
+    const sectionElements = sections.map((s) => ({
+      id: s.id,
+      label: s.label,
+      el: document.getElementById(s.id),
+    }));
+
+    let lastSection = "top";
+
     const handleScroll = () => {
       cancelAnimationFrame(animationFrameId);
       animationFrameId = requestAnimationFrame(() => {
@@ -30,10 +39,13 @@ export default function ScrollMarginIndicator() {
 
         // Detect current section in view
         const scrollMiddle = scrollTop + window.innerHeight * 0.35;
-        for (let i = sections.length - 1; i >= 0; i--) {
-          const el = document.getElementById(sections[i].id);
-          if (el && el.offsetTop <= scrollMiddle) {
-            setActiveSection(sections[i].label);
+        for (let i = sectionElements.length - 1; i >= 0; i--) {
+          const item = sectionElements[i];
+          if (item.el && item.el.offsetTop <= scrollMiddle) {
+            if (lastSection !== item.label) {
+              lastSection = item.label;
+              setActiveSection(item.label);
+            }
             break;
           }
         }

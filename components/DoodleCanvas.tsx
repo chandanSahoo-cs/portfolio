@@ -10,7 +10,7 @@ import {
   Stamp,
   Star,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { soundManager } from "@/lib/audio";
 
 type StampKind = "star" | "coffee" | "sparkle" | "heart" | "checkmark";
@@ -79,6 +79,14 @@ export default function DoodleCanvas() {
     return () => window.removeEventListener("click", handleClick);
   }, [stampMode, selectedStamp]);
 
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
   const toggleMode = () => {
     soundManager.playClick();
     const next = !stampMode;
@@ -90,7 +98,10 @@ export default function DoodleCanvas() {
         </span>
       ) : null,
     );
-    if (next) setTimeout(() => setToast(null), 3000);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    if (next) {
+      toastTimerRef.current = setTimeout(() => setToast(null), 3000);
+    }
   };
 
   const clearStamps = () => {
@@ -101,7 +112,8 @@ export default function DoodleCanvas() {
         <Broom size={16} /> Canvas cleared!
       </span>,
     );
-    setTimeout(() => setToast(null), 2000);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 2000);
   };
 
   return (

@@ -36,7 +36,7 @@ export default function CompetitiveSections() {
     <section id="competitive" className="mx-auto max-w-5xl px-6 py-20">
       <SectionLabel
         index="04"
-        title="competitive coding"
+        title="competitive programming"
         accent="var(--leaf)"
       />
       <div className="mt-10 grid gap-6 sm:grid-cols-3">

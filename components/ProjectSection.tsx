@@ -30,7 +30,7 @@ const PROJECTS = [
     name: "Mesh",
     index: "01",
     tag: "Full-stack Platform",
-    image: "mesh.png",
+    image: "/mesh.png",
     domain: "mesh-ochre.vercel.app",
     desc: "A modern full-stack communication and collaboration platform featuring real-time channels, server-based communities, voice rooms, and fine-grained role permissions.",
     highlights: [
@@ -54,7 +54,7 @@ const PROJECTS = [
     name: "QuickQuill",
     index: "02",
     tag: "Collaborative Editor",
-    image: "quickquill.png",
+    image: "/quickquill.png",
     domain: "quickquill-swart.vercel.app",
     desc: "A powerful, real-time collaborative document and code editor built with integrated Git-like version snapshots, live multi-cursor presence, and visual diff checking.",
     highlights: [
