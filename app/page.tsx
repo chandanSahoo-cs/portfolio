@@ -11,11 +11,13 @@ import PlaneLauncher from "@/components/PlaneLauncher";
 import ProfileSection from "@/components/ProfileSection";
 import ProjectSection from "@/components/ProjectSection";
 import ScrollDoodles from "@/components/ScrollDoodles";
+import ScrollMarginIndicator from "@/components/ScrollMarginIndicator";
 import SkillsSection from "@/components/SkillsSection";
 
 export default function Home() {
   return (
     <div className="relative w-full overflow-x-clip">
+      <ScrollMarginIndicator />
       <ScrollDoodles />
       <PlaneLauncher />
       <DoodleCanvas />
