@@ -297,7 +297,7 @@ export default function PlaneLauncher() {
 
           <div className="text-left">
             <div className="flex items-center gap-1.5 leading-none">
-              <span>THROW PLANE</span>
+              <span>THROW A PLANE</span>
               <kbd className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[3px] border border-ink border-b-[2.5px] bg-paper-alt px-1 font-mono text-[10px] font-bold text-ink shadow-[0_1px_0_0_rgba(26,26,26,0.2)] transition-transform group-hover:scale-105 group-active:translate-y-[1px] group-active:border-b">
                 P
               </kbd>
