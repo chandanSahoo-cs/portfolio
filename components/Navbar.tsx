@@ -152,8 +152,8 @@ export default function Navbar() {
             </span>
           </a>
 
-          {/* Desktop Navigation Links with Hand-Drawn Highlighter Wash */}
-          <div className="hidden items-center gap-1.5 md:flex">
+          {/* Desktop Navigation Links with Doodle Brackets [ item ] */}
+          <div className="hidden items-center gap-1 md:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
               const isHovered = hoveredId === item.id;
@@ -165,33 +165,63 @@ export default function Navbar() {
                   onClick={(e) => scrollToSection(e, item.href)}
                   onMouseEnter={() => handleMouseEnter(item.id)}
                   onMouseLeave={handleMouseLeave}
-                  className={`group relative px-3.5 py-1.5 font-mono text-[13px] transition-colors duration-200 ${
+                  className={`group relative flex items-center px-3.5 py-1.5 font-mono text-[13px] select-none transition-colors duration-200 ${
                     isActive
                       ? "font-bold text-ink"
                       : "font-medium text-ink-soft hover:text-ink"
                   }`}>
-                  {/* Tactile Highlighter Wash Background */}
+                  {/* Left Doodle Bracket */}
                   <span
                     aria-hidden="true"
-                    className={`absolute inset-x-0.5 inset-y-0.5 rounded-[14px_4px_16px_5px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none ${
+                    className={`font-hand text-lg font-bold transition-all duration-200 ${
+                      item.color === "var(--leaf)"
+                        ? "text-leaf"
+                        : item.color === "var(--pen-blue)"
+                        ? "text-pen-blue"
+                        : "text-marker"
+                    } ${
                       isActive
-                        ? "opacity-100 scale-100 shadow-[2px_2px_0_0.5px_var(--ink)]"
+                        ? "opacity-100 translate-x-0 mr-1"
                         : isHovered
-                        ? "opacity-50 scale-95"
+                        ? "opacity-70 -translate-x-0.5 mr-0.5"
+                        : "opacity-0 -translate-x-2 w-0 overflow-hidden mr-0"
+                    }`}>
+                    [
+                  </span>
+
+                  {/* Nav Item Label */}
+                  <span className="relative z-10">{item.name}</span>
+
+                  {/* Right Doodle Bracket */}
+                  <span
+                    aria-hidden="true"
+                    className={`font-hand text-lg font-bold transition-all duration-200 ${
+                      item.color === "var(--leaf)"
+                        ? "text-leaf"
+                        : item.color === "var(--pen-blue)"
+                        ? "text-pen-blue"
+                        : "text-marker"
+                    } ${
+                      isActive
+                        ? "opacity-100 translate-x-0 ml-1"
+                        : isHovered
+                        ? "opacity-70 translate-x-0.5 ml-0.5"
+                        : "opacity-0 translate-x-2 w-0 overflow-hidden ml-0"
+                    }`}>
+                    ]
+                  </span>
+
+                  {/* Tactile Sketch Background Pill */}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-0 -z-10 rounded-full transition-all duration-200 pointer-events-none ${
+                      isActive
+                        ? "opacity-100 scale-100 border border-ink/20 bg-ink/[0.06] shadow-[1px_1px_0_0.5px_rgba(26,26,26,0.1)]"
+                        : isHovered
+                        ? "opacity-100 scale-95 bg-ink/[0.03]"
                         : "opacity-0 scale-90"
                     }`}
-                    style={{
-                      backgroundColor:
-                        item.color === "var(--leaf)"
-                          ? "rgba(47, 174, 107, 0.18)"
-                          : item.color === "var(--pen-blue)"
-                          ? "rgba(77, 124, 255, 0.18)"
-                          : "rgba(255, 77, 61, 0.16)",
-                      border: `1.5px solid ${item.color}`,
-                    }}
                   />
-
-                  <span className="relative z-10">{item.name}</span>
                 </a>
               );
             })}
