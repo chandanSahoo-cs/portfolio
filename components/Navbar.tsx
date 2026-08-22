@@ -58,6 +58,8 @@ export default function Navbar() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
 
   const hoveredRef = useRef<string | null>(null);
+  const isNavigatingRef = useRef<string | null>(null);
+  const navigateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const activeTweenRef = useRef<Map<string, gsap.core.Tween>>(new Map());
 
@@ -73,13 +75,17 @@ export default function Navbar() {
     if (next) soundManager.playClick();
   };
 
-  // Smooth drawing using GSAP power3.out
-  const drawPath = useCallback((id: string, duration = 0.5) => {
+  // Smooth drawing — animates strokeDashoffset to 0 (fully visible)
+  const drawPath = useCallback((id: string, duration = 0.45) => {
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
     const prevTween = activeTweenRef.current.get(id);
     if (prevTween) prevTween.kill();
+
+    // Ensure dasharray is always set
+    const length = pathEl.getTotalLength();
+    gsap.set(pathEl, { strokeDasharray: length });
 
     const tween = gsap.to(pathEl, {
       strokeDashoffset: 0,
@@ -90,8 +96,8 @@ export default function Navbar() {
     activeTweenRef.current.set(id, tween);
   }, []);
 
-  // Smooth un-drawing using GSAP power2.out
-  const undrawPath = useCallback((id: string, duration = 0.3) => {
+  // Smooth un-drawing — animates strokeDashoffset to -length (forward erase)
+  const undrawPath = useCallback((id: string, duration = 0.4) => {
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
@@ -99,13 +105,27 @@ export default function Navbar() {
     if (prevTween) prevTween.kill();
 
     const length = pathEl.getTotalLength();
+    gsap.set(pathEl, { strokeDasharray: length });
+
     const tween = gsap.to(pathEl, {
       strokeDashoffset: -length,
       duration,
-      ease: "power2.out",
+      ease: "power2.inOut",
     });
 
     activeTweenRef.current.set(id, tween);
+  }, []);
+
+  // Initialize all paths as hidden on mount
+  useEffect(() => {
+    pathRefs.current.forEach((pathEl) => {
+      if (!pathEl) return;
+      const length = pathEl.getTotalLength();
+      gsap.set(pathEl, {
+        strokeDasharray: length,
+        strokeDashoffset: length,
+      });
+    });
   }, []);
 
   // Scroll handler with throttle and smooth state tracking
@@ -117,6 +137,20 @@ export default function Navbar() {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           setScrolled(scrollY > 20);
+
+          // If currently navigating via click, don't let intermediate sections override activeSection
+          if (isNavigatingRef.current) {
+            const targetEl = document.getElementById(isNavigatingRef.current);
+            if (targetEl) {
+              const navOffset = 90;
+              const targetY = targetEl.getBoundingClientRect().top + window.scrollY - navOffset;
+              if (Math.abs(scrollY - targetY) < 15) {
+                isNavigatingRef.current = null;
+              }
+            }
+            ticking = false;
+            return;
+          }
 
           const scrollMid = scrollY + window.innerHeight * 0.35;
           let current = "top";
@@ -137,29 +171,38 @@ export default function Navbar() {
       }
     };
 
+    const handleUserInteraction = () => {
+      isNavigatingRef.current = null;
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("wheel", handleUserInteraction, { passive: true });
+    window.addEventListener("touchmove", handleUserInteraction, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleUserInteraction);
+      window.removeEventListener("touchmove", handleUserInteraction);
+      if (navigateTimeoutRef.current) clearTimeout(navigateTimeoutRef.current);
+    };
   }, []);
 
-  // Initialize paths and sync active section drawing
+  // Sync circle drawing whenever the active section changes
+  const prevActiveRef = useRef<string>("top");
   useEffect(() => {
-    pathRefs.current.forEach((pathEl, id) => {
-      if (!pathEl) return;
-      const length = pathEl.getTotalLength();
-      gsap.set(pathEl, {
-        strokeDasharray: length,
-      });
+    const prevActive = prevActiveRef.current;
+    prevActiveRef.current = activeSection;
 
-      if (!hoveredRef.current) {
-        if (id === activeSection) {
-          drawPath(id, 0.55);
-        } else {
-          undrawPath(id, 0.3);
-        }
-      }
-    });
+    // Gracefully un-draw the previous active circle (if it changed and isn't hovered)
+    if (prevActive !== activeSection && prevActive !== hoveredRef.current) {
+      undrawPath(prevActive, 0.45);
+    }
+
+    // Draw the new active circle
+    if (activeSection !== "top") {
+      drawPath(activeSection, 0.5);
+    }
   }, [activeSection, drawPath, undrawPath]);
 
   // Hover handlers
@@ -170,11 +213,15 @@ export default function Navbar() {
 
     soundManager.playScribble();
 
-    const length = pathEl.getTotalLength();
-    gsap.set(pathEl, {
-      strokeDasharray: length,
-      strokeDashoffset: length,
-    });
+    // If this item is NOT the active section, reset stroke and draw fresh
+    // (produces the hand-drawn circle animation on hover)
+    if (id !== activeSection) {
+      const length = pathEl.getTotalLength();
+      gsap.set(pathEl, {
+        strokeDasharray: length,
+        strokeDashoffset: length,
+      });
+    }
 
     drawPath(id, 0.48);
   };
@@ -182,9 +229,11 @@ export default function Navbar() {
   const handleMouseLeave = (id: string) => {
     hoveredRef.current = null;
     if (id === activeSection) {
+      // Keep the active circle visible
       drawPath(id, 0.35);
     } else {
-      undrawPath(id, 0.28);
+      // Gracefully erase non-active circles
+      undrawPath(id, 0.35);
     }
   };
 
@@ -193,6 +242,16 @@ export default function Navbar() {
     e.preventDefault();
     soundManager.playClick();
     const id = href.replace("#", "");
+
+    // Immediately set active section and navigation target
+    setActiveSection(id);
+    isNavigatingRef.current = id;
+
+    if (navigateTimeoutRef.current) clearTimeout(navigateTimeoutRef.current);
+    navigateTimeoutRef.current = setTimeout(() => {
+      isNavigatingRef.current = null;
+    }, 1000);
+
     const el = document.getElementById(id);
     if (el) {
       const navOffset = 90;
