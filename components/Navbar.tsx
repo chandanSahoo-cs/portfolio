@@ -269,7 +269,7 @@ export default function Navbar() {
     };
 
     scrollEndListenerRef.current = onScrollEnd;
-    window.addEventListener("scroll", onScrollEnd, { passive: true });
+    window.addEventListener("scroll", onScrollEnd, { passive: true })
 
     scrollEndTimeout.current = setTimeout(() => {
       isProgrammaticScroll.current = false;
