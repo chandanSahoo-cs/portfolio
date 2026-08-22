@@ -58,10 +58,18 @@ export default function Navbar() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
 
   const hoveredRef = useRef<string | null>(null);
-  const isNavigatingRef = useRef<string | null>(null);
-  const navigateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const activeTweenRef = useRef<Map<string, gsap.core.Tween>>(new Map());
+
+  // Guards against the scroll-spy fighting with a click-triggered smooth scroll
+  const isProgrammaticScroll = useRef(false);
+  const scrollEndTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollEndListenerRef = useRef<(() => void) | null>(null);
+
+  // Tracks the section the sync effect last actually drew, so we can
+  // reliably undraw it even if hoveredRef is stale (e.g. mouseleave
+  // hasn't fired yet because the cursor jumped straight onto the next link).
+  const lastActiveRef = useRef<string>("top");
 
   // Initialize sound state from soundManager
   useEffect(() => {
@@ -75,8 +83,8 @@ export default function Navbar() {
     if (next) soundManager.playClick();
   };
 
-  // Smooth drawing — animates strokeDashoffset to 0 (fully visible)
-  const drawPath = useCallback((id: string, duration = 0.45) => {
+  // Smooth drawing using GSAP power3.out
+  const drawPath = useCallback((id: string, duration = 0.5) => {
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
@@ -92,8 +100,8 @@ export default function Navbar() {
     activeTweenRef.current.set(id, tween);
   }, []);
 
-  // Smooth un-drawing — animates strokeDashoffset to -length (forward erase)
-  const undrawPath = useCallback((id: string, duration = 0.4) => {
+  // Smooth un-drawing using GSAP power2.out
+  const undrawPath = useCallback((id: string, duration = 0.3) => {
     const pathEl = pathRefs.current.get(id);
     if (!pathEl) return;
 
@@ -101,51 +109,32 @@ export default function Navbar() {
     if (prevTween) prevTween.kill();
 
     const length = pathEl.getTotalLength();
-
     const tween = gsap.to(pathEl, {
       strokeDashoffset: -length,
       duration,
-      ease: "power2.inOut",
+      ease: "power2.out",
     });
 
     activeTweenRef.current.set(id, tween);
   }, []);
 
-  // Initialize all paths as hidden on mount
-  useEffect(() => {
-    pathRefs.current.forEach((pathEl) => {
-      if (!pathEl) return;
-      const length = pathEl.getTotalLength();
-      gsap.set(pathEl, {
-        strokeDasharray: length,
-        strokeDashoffset: length,
-      });
-    });
-  }, []);
-
-  // Scroll handler with throttle and smooth state tracking
+  // Scroll spy — determines active section from scroll position
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
+      // While a click-triggered smooth scroll is in flight, don't let the
+      // spy recompute activeSection — it can flicker through intermediate
+      // sections and cause paths to be killed/restarted mid-tween.
+      if (isProgrammaticScroll.current) {
+        setScrolled(window.scrollY > 20);
+        return;
+      }
+
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           setScrolled(scrollY > 20);
-
-          // If currently navigating via click, don't let intermediate sections override activeSection
-          if (isNavigatingRef.current) {
-            const targetEl = document.getElementById(isNavigatingRef.current);
-            if (targetEl) {
-              const navOffset = 90;
-              const targetY = targetEl.getBoundingClientRect().top + window.scrollY - navOffset;
-              if (Math.abs(scrollY - targetY) < 15) {
-                isNavigatingRef.current = null;
-              }
-            }
-            ticking = false;
-            return;
-          }
 
           const scrollMid = scrollY + window.innerHeight * 0.35;
           let current = "top";
@@ -166,38 +155,47 @@ export default function Navbar() {
       }
     };
 
-    const handleUserInteraction = () => {
-      isNavigatingRef.current = null;
-    };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("wheel", handleUserInteraction, { passive: true });
-    window.addEventListener("touchmove", handleUserInteraction, { passive: true });
     handleScroll();
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("wheel", handleUserInteraction);
-      window.removeEventListener("touchmove", handleUserInteraction);
-      if (navigateTimeoutRef.current) clearTimeout(navigateTimeoutRef.current);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync circle drawing whenever the active section changes
-  const prevActiveRef = useRef<string>("top");
+  // Sync circles when activeSection changes
   useEffect(() => {
-    const prevActive = prevActiveRef.current;
-    prevActiveRef.current = activeSection;
+    const previousActive = lastActiveRef.current;
 
-    // Gracefully un-draw the previous active circle (if it changed and isn't hovered)
-    if (prevActive !== activeSection && prevActive !== hoveredRef.current) {
-      undrawPath(prevActive, 0.45);
-    }
+    pathRefs.current.forEach((pathEl, id) => {
+      if (!pathEl) return;
 
-    // Draw the new active circle
-    if (activeSection !== "top") {
-      drawPath(activeSection, 0.5);
-    }
+      // Only (re)establish dasharray if it isn't already set, so we don't
+      // stomp on an in-flight tween's dash state every render.
+      if (!pathEl.style.strokeDasharray) {
+        const length = pathEl.getTotalLength();
+        gsap.set(pathEl, { strokeDasharray: length });
+      }
+
+      // The item that WAS active must always be undrawn when it stops
+      // being active, regardless of hover state — a stale hoveredRef
+      // (e.g. mouseleave hasn't fired yet because the cursor jumped
+      // straight onto the next link) must never block this.
+      if (id === previousActive && id !== activeSection) {
+        undrawPath(id, 0.3);
+        return;
+      }
+
+      // For everything else, respect the currently-hovered item — its
+      // own hover handlers are driving its animation.
+      if (id === hoveredRef.current) return;
+
+      if (id === activeSection) {
+        drawPath(id, 0.55);
+      } else {
+        undrawPath(id, 0.3);
+      }
+    });
+
+    lastActiveRef.current = activeSection;
   }, [activeSection, drawPath, undrawPath]);
 
   // Hover handlers
@@ -208,48 +206,43 @@ export default function Navbar() {
 
     soundManager.playScribble();
 
-    // If not the active section, reset stroke to start position for the
-    // hand-drawn circle effect — BUT only if the path is fully hidden.
-    // If it's mid-undraw (negative offset), let drawPath reverse smoothly.
-    if (id !== activeSection) {
-      const length = pathEl.getTotalLength();
-      const currentOffset = parseFloat(pathEl.style.strokeDashoffset || String(length));
-      // Only reset if the stroke is fully erased (near +length or -length)
-      if (Math.abs(currentOffset) > length * 0.85) {
-        gsap.set(pathEl, {
-          strokeDashoffset: length,
-        });
-      }
-    }
+    const length = pathEl.getTotalLength();
+    gsap.set(pathEl, {
+      strokeDasharray: length,
+      strokeDashoffset: length,
+    });
 
     drawPath(id, 0.48);
   };
 
   const handleMouseLeave = (id: string) => {
-    hoveredRef.current = null;
-    if (id === activeSection) {
-      // Keep the active circle visible
+    // Only clear the hover ref if it's still pointing at this item —
+    // avoids clobbering a newer hover that already took over.
+    if (hoveredRef.current === id) {
+      hoveredRef.current = null;
+    }
+    if (id === lastActiveRef.current) {
       drawPath(id, 0.35);
     } else {
-      // Gracefully erase non-active circles
-      undrawPath(id, 0.35);
+      undrawPath(id, 0.28);
     }
   };
 
-  // Ultra-smooth custom scroll jump
+  // Scroll to section on click
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     soundManager.playClick();
     const id = href.replace("#", "");
 
-    // Immediately set active section and navigation target
-    setActiveSection(id);
-    isNavigatingRef.current = id;
+    // Freeze the scroll spy for the duration of the programmatic scroll
+    isProgrammaticScroll.current = true;
+    if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
+    if (scrollEndListenerRef.current) {
+      window.removeEventListener("scroll", scrollEndListenerRef.current);
+      scrollEndListenerRef.current = null;
+    }
 
-    if (navigateTimeoutRef.current) clearTimeout(navigateTimeoutRef.current);
-    navigateTimeoutRef.current = setTimeout(() => {
-      isNavigatingRef.current = null;
-    }, 1000);
+    setActiveSection(id);
 
     const el = document.getElementById(id);
     if (el) {
@@ -260,7 +253,42 @@ export default function Navbar() {
         behavior: "smooth",
       });
     }
+
+    // Debounce on scroll-stop to detect when the smooth scroll has settled,
+    // then release the spy lock. Includes a hard fallback timeout in case
+    // no scroll event fires at all (e.g. clicking the already-active section).
+    const onScrollEnd = () => {
+      if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
+      scrollEndTimeout.current = setTimeout(() => {
+        isProgrammaticScroll.current = false;
+        if (scrollEndListenerRef.current) {
+          window.removeEventListener("scroll", scrollEndListenerRef.current);
+          scrollEndListenerRef.current = null;
+        }
+      }, 100);
+    };
+
+    scrollEndListenerRef.current = onScrollEnd;
+    window.addEventListener("scroll", onScrollEnd, { passive: true });
+
+    scrollEndTimeout.current = setTimeout(() => {
+      isProgrammaticScroll.current = false;
+      if (scrollEndListenerRef.current) {
+        window.removeEventListener("scroll", scrollEndListenerRef.current);
+        scrollEndListenerRef.current = null;
+      }
+    }, 1000);
   };
+
+  // Cleanup any pending timers/listeners on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
+      if (scrollEndListenerRef.current) {
+        window.removeEventListener("scroll", scrollEndListenerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full select-none">
