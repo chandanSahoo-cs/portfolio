@@ -83,10 +83,6 @@ export default function Navbar() {
     const prevTween = activeTweenRef.current.get(id);
     if (prevTween) prevTween.kill();
 
-    // Ensure dasharray is always set
-    const length = pathEl.getTotalLength();
-    gsap.set(pathEl, { strokeDasharray: length });
-
     const tween = gsap.to(pathEl, {
       strokeDashoffset: 0,
       duration,
@@ -105,7 +101,6 @@ export default function Navbar() {
     if (prevTween) prevTween.kill();
 
     const length = pathEl.getTotalLength();
-    gsap.set(pathEl, { strokeDasharray: length });
 
     const tween = gsap.to(pathEl, {
       strokeDashoffset: -length,
@@ -213,14 +208,18 @@ export default function Navbar() {
 
     soundManager.playScribble();
 
-    // If this item is NOT the active section, reset stroke and draw fresh
-    // (produces the hand-drawn circle animation on hover)
+    // If not the active section, reset stroke to start position for the
+    // hand-drawn circle effect — BUT only if the path is fully hidden.
+    // If it's mid-undraw (negative offset), let drawPath reverse smoothly.
     if (id !== activeSection) {
       const length = pathEl.getTotalLength();
-      gsap.set(pathEl, {
-        strokeDasharray: length,
-        strokeDashoffset: length,
-      });
+      const currentOffset = parseFloat(pathEl.style.strokeDashoffset || String(length));
+      // Only reset if the stroke is fully erased (near +length or -length)
+      if (Math.abs(currentOffset) > length * 0.85) {
+        gsap.set(pathEl, {
+          strokeDashoffset: length,
+        });
+      }
     }
 
     drawPath(id, 0.48);
