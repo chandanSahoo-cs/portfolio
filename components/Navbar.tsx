@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import gsap from "gsap";
-import { Menu, X, Volume2, VolumeX } from "lucide-react";
 import { soundManager } from "@/lib/audio";
+import { Menu, Volume2, VolumeX, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface NavItem {
   name: string;
   href: string;
   id: string;
   color: string;
-  path: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -19,35 +17,30 @@ const NAV_ITEMS: NavItem[] = [
     href: "#projects",
     id: "projects",
     color: "var(--marker)",
-    path: "M 14 20 C 12 7, 34 3, 62 3 C 94 3, 115 9, 113 22 C 111 35, 86 41, 52 41 C 18 41, 4 34, 5 21 C 6 10, 22 4.5, 48 4",
   },
   {
     name: "experience",
     href: "#experience",
     id: "experience",
     color: "var(--marker)",
-    path: "M 16 22 C 13 8, 38 3, 68 3 C 104 3, 120 10, 118 23 C 116 36, 88 41, 54 41 C 20 41, 4 35, 6 22 C 8 10, 26 4, 54 3.5",
   },
   {
     name: "skills",
     href: "#skills",
     id: "skills",
     color: "var(--marker)",
-    path: "M 12 20 C 10 7, 28 3, 52 3 C 82 3, 102 9, 100 22 C 98 35, 76 41, 46 41 C 18 41, 3 34, 5 20 C 6 9, 20 4.5, 42 4",
   },
   {
     name: "competitive",
     href: "#competitive",
     id: "competitive",
     color: "var(--leaf)",
-    path: "M 18 22 C 14 8, 44 3, 78 3 C 118 3, 140 10, 138 23 C 136 36, 104 41, 64 41 C 24 41, 4 35, 6 21 C 8 9, 32 4, 62 3.5",
   },
   {
     name: "find me",
     href: "#profiles",
     id: "profiles",
     color: "var(--pen-blue)",
-    path: "M 14 20 C 11 7, 30 3, 58 3 C 90 3, 110 9, 108 22 C 106 35, 82 41, 48 41 C 18 41, 4 34, 5 21 C 6 10, 20 4.5, 46 4",
   },
 ];
 
@@ -56,20 +49,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
-
-  const hoveredRef = useRef<string | null>(null);
-  const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
-  const activeTweenRef = useRef<Map<string, gsap.core.Tween>>(new Map());
-
-  // Guards against the scroll-spy fighting with a click-triggered smooth scroll
-  const isProgrammaticScroll = useRef(false);
-  const scrollEndTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scrollEndListenerRef = useRef<(() => void) | null>(null);
-
-  // Tracks the section the sync effect last actually drew, so we can
-  // reliably undraw it even if hoveredRef is stale (e.g. mouseleave
-  // hasn't fired yet because the cursor jumped straight onto the next link).
-  const lastActiveRef = useRef<string>("top");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Initialize sound state from soundManager
   useEffect(() => {
@@ -83,54 +63,11 @@ export default function Navbar() {
     if (next) soundManager.playClick();
   };
 
-  // Smooth drawing using GSAP power3.out
-  const drawPath = useCallback((id: string, duration = 0.5) => {
-    const pathEl = pathRefs.current.get(id);
-    if (!pathEl) return;
-
-    const prevTween = activeTweenRef.current.get(id);
-    if (prevTween) prevTween.kill();
-
-    const tween = gsap.to(pathEl, {
-      strokeDashoffset: 0,
-      duration,
-      ease: "power3.out",
-    });
-
-    activeTweenRef.current.set(id, tween);
-  }, []);
-
-  // Smooth un-drawing using GSAP power2.out
-  const undrawPath = useCallback((id: string, duration = 0.3) => {
-    const pathEl = pathRefs.current.get(id);
-    if (!pathEl) return;
-
-    const prevTween = activeTweenRef.current.get(id);
-    if (prevTween) prevTween.kill();
-
-    const length = pathEl.getTotalLength();
-    const tween = gsap.to(pathEl, {
-      strokeDashoffset: -length,
-      duration,
-      ease: "power2.out",
-    });
-
-    activeTweenRef.current.set(id, tween);
-  }, []);
-
   // Scroll spy — determines active section from scroll position
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      // While a click-triggered smooth scroll is in flight, don't let the
-      // spy recompute activeSection — it can flicker through intermediate
-      // sections and cause paths to be killed/restarted mid-tween.
-      if (isProgrammaticScroll.current) {
-        setScrolled(window.scrollY > 20);
-        return;
-      }
-
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
@@ -161,134 +98,37 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync circles when activeSection changes
-  useEffect(() => {
-    const previousActive = lastActiveRef.current;
-
-    pathRefs.current.forEach((pathEl, id) => {
-      if (!pathEl) return;
-
-      // Only (re)establish dasharray if it isn't already set, so we don't
-      // stomp on an in-flight tween's dash state every render.
-      if (!pathEl.style.strokeDasharray) {
-        const length = pathEl.getTotalLength();
-        gsap.set(pathEl, { strokeDasharray: length });
-      }
-
-      // The item that WAS active must always be undrawn when it stops
-      // being active, regardless of hover state — a stale hoveredRef
-      // (e.g. mouseleave hasn't fired yet because the cursor jumped
-      // straight onto the next link) must never block this.
-      if (id === previousActive && id !== activeSection) {
-        undrawPath(id, 0.3);
-        return;
-      }
-
-      // For everything else, respect the currently-hovered item — its
-      // own hover handlers are driving its animation.
-      if (id === hoveredRef.current) return;
-
-      if (id === activeSection) {
-        drawPath(id, 0.55);
-      } else {
-        undrawPath(id, 0.3);
-      }
-    });
-
-    lastActiveRef.current = activeSection;
-  }, [activeSection, drawPath, undrawPath]);
-
   // Hover handlers
   const handleMouseEnter = (id: string) => {
-    hoveredRef.current = id;
-    const pathEl = pathRefs.current.get(id);
-    if (!pathEl) return;
-
+    setHoveredId(id);
     soundManager.playScribble();
-
-    const length = pathEl.getTotalLength();
-    gsap.set(pathEl, {
-      strokeDasharray: length,
-      strokeDashoffset: length,
-    });
-
-    drawPath(id, 0.48);
   };
 
-  const handleMouseLeave = (id: string) => {
-    // Only clear the hover ref if it's still pointing at this item —
-    // avoids clobbering a newer hover that already took over.
-    if (hoveredRef.current === id) {
-      hoveredRef.current = null;
-    }
-    if (id === lastActiveRef.current) {
-      drawPath(id, 0.35);
-    } else {
-      undrawPath(id, 0.28);
-    }
+  const handleMouseLeave = () => {
+    setHoveredId(null);
   };
 
   // Scroll to section on click
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
     e.preventDefault();
     soundManager.playClick();
     const id = href.replace("#", "");
-
-    // Freeze the scroll spy for the duration of the programmatic scroll
-    isProgrammaticScroll.current = true;
-    if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
-    if (scrollEndListenerRef.current) {
-      window.removeEventListener("scroll", scrollEndListenerRef.current);
-      scrollEndListenerRef.current = null;
-    }
-
     setActiveSection(id);
 
     const el = document.getElementById(id);
     if (el) {
       const navOffset = 90;
-      const targetY = el.getBoundingClientRect().top + window.scrollY - navOffset;
+      const targetY =
+        el.getBoundingClientRect().top + window.scrollY - navOffset;
       window.scrollTo({
         top: targetY,
         behavior: "smooth",
       });
     }
-
-    // Debounce on scroll-stop to detect when the smooth scroll has settled,
-    // then release the spy lock. Includes a hard fallback timeout in case
-    // no scroll event fires at all (e.g. clicking the already-active section).
-    const onScrollEnd = () => {
-      if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
-      scrollEndTimeout.current = setTimeout(() => {
-        isProgrammaticScroll.current = false;
-        if (scrollEndListenerRef.current) {
-          window.removeEventListener("scroll", scrollEndListenerRef.current);
-          scrollEndListenerRef.current = null;
-        }
-      }, 100);
-    };
-
-    scrollEndListenerRef.current = onScrollEnd;
-    window.addEventListener("scroll", onScrollEnd, { passive: true })
-
-    scrollEndTimeout.current = setTimeout(() => {
-      isProgrammaticScroll.current = false;
-      if (scrollEndListenerRef.current) {
-        window.removeEventListener("scroll", scrollEndListenerRef.current);
-        scrollEndListenerRef.current = null;
-      }
-    }, 1000);
   };
-
-  // Cleanup any pending timers/listeners on unmount
-  useEffect(() => {
-    return () => {
-      if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
-      if (scrollEndListenerRef.current) {
-        window.removeEventListener("scroll", scrollEndListenerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full select-none">
@@ -298,14 +138,12 @@ export default function Navbar() {
             scrolled
               ? "rough-border translate-y-0"
               : "border-2 border-ink/20 shadow-[2px_2px_0_0.5px_rgba(26,26,26,0.1)]"
-          }`}
-        >
+          }`}>
           {/* Logo */}
           <a
             href="#top"
             onClick={(e) => scrollToSection(e, "#top")}
-            className="group relative flex items-center font-display text-lg tracking-tight select-none"
-          >
+            className="group relative flex items-center font-display text-lg tracking-tight select-none">
             <span className="transition-transform duration-300 group-hover:-rotate-3">
               CS
             </span>
@@ -314,10 +152,11 @@ export default function Navbar() {
             </span>
           </a>
 
-          {/* Desktop Navigation Links with Live-Drawn Circles */}
-          <div className="hidden items-center gap-1 md:flex">
+          {/* Desktop Navigation Links with Hand-Drawn Highlighter Wash */}
+          <div className="hidden items-center gap-1.5 md:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
+              const isHovered = hoveredId === item.id;
 
               return (
                 <a
@@ -325,35 +164,32 @@ export default function Navbar() {
                   href={item.href}
                   onClick={(e) => scrollToSection(e, item.href)}
                   onMouseEnter={() => handleMouseEnter(item.id)}
-                  onMouseLeave={() => handleMouseLeave(item.id)}
-                  className={`relative px-3.5 py-1 font-mono text-[13px] transition-colors duration-200 ${
+                  onMouseLeave={handleMouseLeave}
+                  className={`group relative px-3.5 py-1.5 font-mono text-[13px] transition-colors duration-200 ${
                     isActive
                       ? "font-bold text-ink"
                       : "font-medium text-ink-soft hover:text-ink"
-                  }`}
-                >
-                  {/* SVG Canvas with Live Drawn Stroke */}
-                  <svg
-                    viewBox="0 0 120 44"
-                    fill="none"
+                  }`}>
+                  {/* Tactile Highlighter Wash Background */}
+                  <span
                     aria-hidden="true"
-                    preserveAspectRatio="none"
-                    className="pointer-events-none absolute -inset-x-2 -inset-y-1 h-[calc(100%+8px)] w-[calc(100%+16px)] overflow-visible"
-                  >
-                    <path
-                      ref={(el) => {
-                        if (el) pathRefs.current.set(item.id, el);
-                        else pathRefs.current.delete(item.id);
-                      }}
-                      d={item.path}
-                      fill="none"
-                      stroke={item.color}
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style={{ willChange: "stroke-dashoffset" }}
-                    />
-                  </svg>
+                    className={`absolute inset-x-0.5 inset-y-0.5 rounded-[14px_4px_16px_5px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none ${
+                      isActive
+                        ? "opacity-100 scale-100 shadow-[2px_2px_0_0.5px_var(--ink)]"
+                        : isHovered
+                        ? "opacity-50 scale-95"
+                        : "opacity-0 scale-90"
+                    }`}
+                    style={{
+                      backgroundColor:
+                        item.color === "var(--leaf)"
+                          ? "rgba(47, 174, 107, 0.18)"
+                          : item.color === "var(--pen-blue)"
+                          ? "rgba(77, 124, 255, 0.18)"
+                          : "rgba(255, 77, 61, 0.16)",
+                      border: `1.5px solid ${item.color}`,
+                    }}
+                  />
 
                   <span className="relative z-10">{item.name}</span>
                 </a>
@@ -367,13 +203,16 @@ export default function Navbar() {
             <button
               type="button"
               onClick={toggleSound}
-              title={soundEnabled ? "Mute Web Audio SFX" : "Enable Tactile Paper & Pen SFX"}
+              title={
+                soundEnabled
+                  ? "Mute Web Audio SFX"
+                  : "Enable Tactile Paper & Pen SFX"
+              }
               className={`rough-border flex h-8 items-center gap-1.5 px-2 font-mono text-[11px] font-bold transition-all ${
                 soundEnabled
                   ? "bg-sticky text-ink"
                   : "bg-paper text-ink-soft hover:bg-paper-alt"
-              }`}
-            >
+              }`}>
               {soundEnabled ? (
                 <>
                   <Volume2 className="h-3.5 w-3.5 text-marker" />
@@ -391,8 +230,7 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={(e) => scrollToSection(e, "#contact")}
-              className="rough-border relative overflow-hidden bg-marker px-3.5 sm:px-4 py-1.5 font-mono text-xs font-bold text-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0.5px_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0.5px_var(--ink)]"
-            >
+              className="rough-border relative overflow-hidden bg-marker px-3.5 sm:px-4 py-1.5 font-mono text-xs font-bold text-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0.5px_var(--ink)] active:translate-y-0 active:shadow-[2px_2px_0_0.5px_var(--ink)]">
               say hi
             </a>
 
@@ -404,8 +242,7 @@ export default function Navbar() {
                 setMobileMenuOpen(!mobileMenuOpen);
               }}
               className="rough-border flex h-8 w-8 items-center justify-center bg-paper p-1 text-ink transition-all md:hidden"
-              aria-label="Toggle navigation menu"
-            >
+              aria-label="Toggle navigation menu">
               {mobileMenuOpen ? (
                 <X className="h-4 w-4" />
               ) : (
@@ -433,8 +270,7 @@ export default function Navbar() {
                       isActive
                         ? "font-bold text-marker"
                         : "text-ink-soft hover:text-ink"
-                    }`}
-                  >
+                    }`}>
                     <span>{item.name}</span>
                     {isActive && (
                       <span className="font-hand text-lg text-marker">
