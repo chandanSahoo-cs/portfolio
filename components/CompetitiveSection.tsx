@@ -40,6 +40,7 @@ const COMPETITIVE: CompetitivePlatform[] = [
     stat: "595 problems solved",
     color: "var(--marker)",
     url: "https://codeforces.com/profile/Realmchan",
+    repoUrl: "https://github.com/chandanSahoo-cs/code-submission",
   },
   {
     platform: "LeetCode",
